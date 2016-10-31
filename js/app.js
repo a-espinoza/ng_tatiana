@@ -38,7 +38,7 @@ function EventFactoryFunction(){
 }
 
 $.ajax({
-  url: 'http://localhost:3000/events',
+  url: 'http://localhost:3000/events.json',
   type: "get",
   dataType: "json"
 }).done((response) => {
