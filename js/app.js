@@ -1,25 +1,33 @@
 angular
-.module("tatiana", [
-  "ui.router"
-])
-.config([
-  "$stateProvider",
-  Router
-])
-.controller("eventIndexController", [
-  "EventFactory",
-  eventIndexControllerFunction
-])
-.factory("EventFactory", [
-  EventFactoryFunction
-])
+  .module("tatiana", [
+    "ui.router",
+    "ngResource"
+  ])
+  .config([
+    "$stateProvider",
+    Router
+  ])
+  .controller("eventIndexController", [
+    "EventFactory",
+    eventIndexControllerFunction
+  ])
+  .controller("EventNewController", [
+    "EventFactory",
+    eventNewControllerFunction
+  ])
+  .controller("EventShowController", [
+    "EventFactory",
+    "$stateParams",
+    EventShowControllerFunction
+  ])
+  .factory("EventFactory", [
+    "$resource",
+    EventFactoryFunction
+  ])
 
-function eventIndexControllerFunction(EventFactory){
-  $('body').append("<p>hello</p>")
-}
-
+// Routing
 function Router($stateProvider){
-  console.log("router");
+  console.log("router works!");
   $stateProvider
   .state("eventIndex", {
     url: "/events",
@@ -27,16 +35,38 @@ function Router($stateProvider){
     controller: "eventIndexController",
     controllerAs: "vm"
   })
+  .state("eventNew", {
+    url: "/events/new",
+    templateUrl: "js/ng-views/new.html",
+    controller: "EventNewController",
+    controllerAs: "vm"
+  })
+  .state("eventShow", {
+    url: "/events/:id",
+    templateUrl: "js/ng-views/show.html",
+    controller: "EventShowController",
+    controllerAs: "vm"
+  })
 }
 
-function EventFactoryFunction(){
-  return {
-    test: function(){
-      console.log("factory working");
-    }
-  }
+function EventFactoryFunction($resource) {
+  return $resource("http://localhost:9000/events/:id")
 }
 
+function eventIndexControllerFunction(EventFactory){
+  console.log("index");
+  this.events = EventFactory.query()
+}
+
+function eventNewControllerFunction(EventFactory) {
+  console.log('add new controller function here');
+}
+
+function EventShowControllerFunction(EventFactory, $stateParams) {
+  this.event = EventFactory.get({id: $stateParams.id})
+}
+
+// ajax to call our rails API
 $.ajax({
   url: 'http://localhost:3000/events.json',
   type: "get",
