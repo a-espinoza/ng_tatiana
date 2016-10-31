@@ -66,11 +66,35 @@ function EventShowControllerFunction(EventFactory, $stateParams) {
   this.event = EventFactory.get({id: $stateParams.id})
 }
 
+function eventNewControllerFunction(EventFactory) {
+  this.event = new EventFactory()
+  this.create = function() {
+    console.log(this.event);
+    $.ajax({
+      url: 'http://localhost:3000/events',
+      type: "post",
+      dataType: "json",
+      data: {
+        event: {
+          title: this.event.title
+        }
+      }
+    }).done((response) => {
+      console.log(response)
+      this.event.$save()
+    }).fail(() => {
+      console.log("Ajax request fails!")
+    }).always(() => {
+      console.log("This always happens regardless of successful ajax request or not.")
+    })
+  }
+}
+
 // ajax to call our rails API
 $.ajax({
   url: 'http://localhost:3000/events.json',
   type: "get",
-  dataType: "json"
+  dataType: "json",
 }).done((response) => {
   console.log(response)
 }).fail(() => {
@@ -78,8 +102,6 @@ $.ajax({
 }).always(() => {
   console.log("This always happens regardless of successful ajax request or not.")
 })
-
-
 
 // Setup an event listener to make an API call once auth is complete
 function onLinkedInLoad() {
@@ -98,6 +120,5 @@ function onError(error) {
 
 // Use the API call wrapper to request the member's basic profile data
 function getProfileData() {
-  IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
+  IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
 }
-// IN.User.logout(callbackFunction, callbackScope);
