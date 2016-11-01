@@ -67,9 +67,10 @@ function eventIndexControllerFunction(EventFactory){
 }
 
 function EventShowControllerFunction(EventFactory, $stateParams, UserFactory) {
-  this.event = EventFactory.get({id: $stateParams.id}).$promise.then(function(response){
-    console.log(response.attendances);
-  })
+  this.event = EventFactory.get({id: $stateParams.id})
+  this.event.$promise.then(
+    this.attendances = this.event.attendances
+  )
 }
 
 function eventNewControllerFunction(EventFactory, $state) {
@@ -77,7 +78,7 @@ function eventNewControllerFunction(EventFactory, $state) {
     Event = new EventFactory(this.event)
     Event.$save().then(event => {
       console.log(event);
-      $state.go('eventShow', {event: event})
+      $state.go('eventShow', {id: event.id})
     })
   }
 }
