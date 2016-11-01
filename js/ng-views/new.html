@@ -1,0 +1,12 @@
+<h1>this is the new page</h1>
+<h2>Create new event</h2>
+
+<form name="newForm" method="post">
+  <input placeholder="Title" data-ng-model="vm.event.title" />
+  <input placeholder="Code" data-ng-model="vm.event.code" />
+  <input placeholder="Location" data-ng-model="vm.event.location" />
+  <input placeholder="Time" data-ng-model="vm.event.time" />
+  <input placeholder="Date" data-ng-model="vm.event.date" />
+  <input placeholder="Cost" data-ng-model="vm.event.cost" />
+  <button type="button" data-ng-click="vm.create()">Create</button>
+</form>
