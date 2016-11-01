@@ -13,6 +13,7 @@ angular
   ])
   .controller("EventNewController", [
     "EventFactory",
+    "$stateParams",
     eventNewControllerFunction
   ])
   .controller("EventShowController", [
@@ -50,7 +51,7 @@ function Router($stateProvider){
 }
 
 function EventFactoryFunction($resource) {
-  return $resource("http://localhost:9000/events/:id")
+  return $resource("http://localhost:3000/events/:id")
 }
 
 function eventIndexControllerFunction(EventFactory){
@@ -67,41 +68,45 @@ function EventShowControllerFunction(EventFactory, $stateParams) {
 }
 
 function eventNewControllerFunction(EventFactory) {
-  this.event = new EventFactory()
-  this.create = function() {
-    console.log(this.event);
-    $.ajax({
-      url: 'http://localhost:3000/events',
-      type: "post",
-      dataType: "json",
-      data: {
-        event: {
-          title: this.event.title
-        }
-      }
-    }).done((response) => {
-      console.log(response)
-      this.event.$save()
-    }).fail(() => {
-      console.log("Ajax request fails!")
-    }).always(() => {
-      console.log("This always happens regardless of successful ajax request or not.")
-    })
-  }
+  this.create = function(){
+    Event = new EventFactory(this.event)
+    Event.$save()
 }
+  }
+  // this.create = function() {
+  //   console.log(this.event);
+  //   $.ajax({
+  //     url: 'http://localhost:3000/events',
+  //     type: "post",
+  //     dataType: "json",
+  //     data: {
+  //       event: {
+  //         title: this.event.title
+  //       }
+  //     }
+  //   }).done((response) => {
+  //     console.log(response)
+  //     this.event.$save()
+  //   }).fail(() => {
+  //     console.log("Ajax request fails!")
+  //   }).always(() => {
+  //     console.log("This always happens regardless of successful ajax request or not.")
+  //   })
+  // }
+
 
 // ajax to call our rails API
-$.ajax({
-  url: 'http://localhost:3000/events.json',
-  type: "get",
-  dataType: "json",
-}).done((response) => {
-  console.log(response)
-}).fail(() => {
-  console.log("Ajax request fails!")
-}).always(() => {
-  console.log("This always happens regardless of successful ajax request or not.")
-})
+// $.ajax({
+//   url: 'http://localhost:3000/events.json',
+//   type: "get",
+//   dataType: "json",
+// }).done((response) => {
+//   console.log(response)
+// }).fail(() => {
+//   console.log("Ajax request fails!")
+// }).always(() => {
+//   console.log("This always happens regardless of successful ajax request or not.")
+// })
 
 // Setup an event listener to make an API call once auth is complete
 function onLinkedInLoad() {
