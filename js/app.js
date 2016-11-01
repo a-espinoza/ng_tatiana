@@ -13,7 +13,7 @@ angular
   ])
   .controller("EventNewController", [
     "EventFactory",
-    "$stateParams",
+    "$state",
     eventNewControllerFunction
   ])
   .controller("EventShowController", [
@@ -72,12 +72,15 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory) {
   })
 }
 
-function eventNewControllerFunction(EventFactory) {
+function eventNewControllerFunction(EventFactory, $state) {
   this.create = function(){
     Event = new EventFactory(this.event)
-    Event.$save()
-}
+    Event.$save().then(event => {
+      console.log(event);
+      $state.go('eventShow', {event: event})
+    })
   }
+}
   // this.create = function() {
   //   console.log(this.event);
   //   $.ajax({
