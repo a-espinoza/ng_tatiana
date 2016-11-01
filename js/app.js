@@ -19,16 +19,20 @@ angular
   .controller("EventShowController", [
     "EventFactory",
     "$stateParams",
+    "UserFactory",
     EventShowControllerFunction
   ])
   .factory("EventFactory", [
     "$resource",
     EventFactoryFunction
   ])
+  .factory("UserFactory", [
+    "$resource",
+    UserFactoryFunction
+  ])
 
 // Routing
 function Router($stateProvider){
-  console.log("router works!");
   $stateProvider
   .state("eventIndex", {
     url: "/events",
@@ -54,17 +58,18 @@ function EventFactoryFunction($resource) {
   return $resource("http://localhost:3000/events/:id")
 }
 
+function UserFactoryFunction($resource) {
+  return $resource("http://localhost:3000/users/:id")
+}
+
 function eventIndexControllerFunction(EventFactory){
-  console.log("index");
   this.events = EventFactory.query()
 }
 
-function eventNewControllerFunction(EventFactory) {
-  console.log('add new controller function here');
-}
-
-function EventShowControllerFunction(EventFactory, $stateParams) {
-  this.event = EventFactory.get({id: $stateParams.id})
+function EventShowControllerFunction(EventFactory, $stateParams, UserFactory) {
+  this.event = EventFactory.get({id: $stateParams.id}).$promise.then(function(response){
+    console.log(response.attendances);
+  })
 }
 
 function eventNewControllerFunction(EventFactory) {
