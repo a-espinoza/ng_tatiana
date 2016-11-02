@@ -1,0 +1,8 @@
+<h1>{{vm.whole.event.title}}</h1>
+
+<div data-ng-repeat="user in vm.whole.attendees">
+  <p>{{user.name}}</p>
+</div>
+
+  <button data-ng-click="vm.update()">Update</button>
+  <button data-ng-click="vm.destroy()">Delete</button>

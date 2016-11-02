@@ -1,6 +1,7 @@
 angular
 .module("tatiana", [
-  "ui.router"
+  "ui.router",
+  "ngResource"
 ])
 .config([
   "$stateProvider",
@@ -8,18 +9,46 @@ angular
 ])
 .controller("eventIndexController", [
   "EventFactory",
+  "UserFactory",
   eventIndexControllerFunction
 ])
+.controller("EventNewController", [
+  "EventFactory",
+  "$state",
+  eventNewControllerFunction
+])
+.controller("EventShowController", [
+  "EventFactory",
+  "$stateParams",
+  "UserFactory",
+  "$state",
+  EventShowControllerFunction
+])
+.controller("EventUpdateController", [
+  "$stateParams",
+  "EventFactory",
+  EventUpdateControllerFunction
+])
+.controller("EventWelcomeController", [
+  "EventFactory",
+  "UserFactory",
+  EventWelcomeControllerFunction
+])
+.controller("UserCreateController", [
+  "UserFactory",
+  UserCreateControllerFunction
+])
 .factory("EventFactory", [
+  "$resource",
   EventFactoryFunction
 ])
+.factory("UserFactory", [
+  "$resource",
+  UserFactoryFunction
+])
 
-function eventIndexControllerFunction(EventFactory){
-  $('body').append("<p>hello</p>")
-}
-
+// Routing
 function Router($stateProvider){
-  console.log("router");
   $stateProvider
   .state("eventIndex", {
     url: "/events",
@@ -27,48 +56,128 @@ function Router($stateProvider){
     controller: "eventIndexController",
     controllerAs: "vm"
   })
+  .state("eventNew", {
+    url: "/events/new",
+    templateUrl: "js/ng-views/new.html",
+    controller: "EventNewController",
+    controllerAs: "vm"
+  })
+  .state("eventShow", {
+    url: "/events/:id",
+    templateUrl: "js/ng-views/show.html",
+    controller: "EventShowController",
+    controllerAs: "vm"
+  })
+  .state("eventUpdate", {
+    url: "events/:id/update",
+    templateUrl: "js/ng-views/update.html",
+    controller: "EventUpdateController",
+    controllerAs: "vm"
+  })
+  .state("eventWelcome", {
+    url: "/",
+    templateUrl: "js/ng-views/welcome.html",
+    controller: "EventWelcomeController",
+    controllerAs: "vm"
+  })
+  .state("userCreate", {
+    url: '/users/:id',
+    templateUrl: 'js/ng-view/new_user.html',
+    controller: 'UserCreateController',
+    controllerAs: 'vm'
+  })
 }
 
-function EventFactoryFunction(){
-  return {
-    test: function(){
-      console.log("factory working");
-    }
+function EventFactoryFunction($resource) {
+  return $resource("http://localhost:3000/events/:id", {}, {
+    update: { method: "put" }
+  })
+}
+
+function UserFactoryFunction($resource) {
+  return $resource("http://localhost:3000/users/:id", {}, {
+    create: { method: "POST" }
+  })
+}
+
+function eventIndexControllerFunction(EventFactory, UserFactory){
+  this.events = EventFactory.query()
+}
+
+function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $state) {
+  this.whole = EventFactory.get({id: $stateParams.id}, function(response){
+    this.title = response.event.title
+    this.attendances = response.event.attendances
+  })
+  this.update = function(){
+    $state.go('eventUpdate', {id: $stateParams.id})
+  }
+  this.destroy = function(){
+    console.log("delete");
   }
 }
 
-$.ajax({
-  url: 'http://localhost:3000/events.json',
-  type: "get",
-  dataType: "json"
-}).done((response) => {
-  console.log(response)
-}).fail(() => {
-  console.log("Ajax request fails!")
-}).always(() => {
-  console.log("This always happens regardless of successful ajax request or not.")
-})
 
+function EventWelcomeControllerFunction(EventFactory, UserFactory) {
+  console.log("welcome");
 
-
-// Setup an event listener to make an API call once auth is complete
-function onLinkedInLoad() {
-   IN.Event.on(IN, "auth", getProfileData);
 }
 
-// Handle the successful return from the API call
-function onSuccess(data) {
-   console.log(data);
+function eventNewControllerFunction(EventFactory, $state) {
+  this.create = function(){
+    Event = new EventFactory(this.event)
+    Event.$save().then(event => {
+      console.log(event);
+      $state.go('eventShow', {id: event.id})
+    })
+  }
+
+  function EventUpdateControllerFunction($stateParams, EventFactory){
+    const self = this
+    this.event = EventFactory.get({id: $stateParams.id}, function(response){
+      self.event = response.event
+    })
+    this.update = function(){
+      EventFactory.update({id: $stateParams.id}, this.event).$promise.then(function(response){
+        self.event = response.event
+      }
+    )
+  }
 }
 
-// Handle an error response from the API call
-function onError(error) {
-   console.log(error);
-}
+function UserCreateControllerFunction(){
+  this.create = function(){
+    User = new UserFactory(this.user)
+    User.$save().then(user => {
+      console.log(user);
+      $state.go('eventWelcome', {id: event.id})
+    })
+  }
+  // function userCreate(UserFactory){
+  //   console.log("HIII");
+  //   // create users
+  //
+  //   let user = window.data
+  //   console.log(user);
+  //
+  //   function createUser(user) {
+  //     UserFactory.create({
+  //       name: user.firstName
+  //     }).$promise.then( () => {
+  //       console.log(window.data);
+  //     })
+  //   }
+  //
+  // }
 
-// Use the API call wrapper to request the member's basic profile data
-function getProfileData() {
-   IN.API.Raw("/people/~").result(onSuccess).error(onError);
-}
-
-// IN.User.logout(callbackFunction, callbackScope);
+  function onLinkedInLoad() {
+    IN.Event.on(IN, "auth", function(){
+      IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
+      function onSuccess(data, UserFactory) {
+        console.log(data);
+      }
+      function onError(error) {
+        console.log(error);
+      }
+    });
+  }
