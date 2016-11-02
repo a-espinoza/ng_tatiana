@@ -114,6 +114,12 @@ function EventWelcomeControllerFunction(EventFactory) {
 }
 
 function eventNewControllerFunction(EventFactory, $state) {
+  this.random = function(){
+    var words = ['PurpleRock', 'redPaper', 'rainbowScissors', 'atmosphericPrisson', 'greenCofee', 'giatShirt', 'signRacoon', 'ballonAnt', 'randomCommit',
+    'whopperInsect', 'intenseShoe',  'conffettiSandwich', 'instantHomework', 'brainWind', 'twoWall', 'perfectGlass', 'commandRope', 'yellowGrass', 'rockandSoup'];
+  var word = words[Math.floor(Math.random() * words.length)];
+  return word
+  }}
   this.create = function(){
     Event = new EventFactory(this.event)
     Event.$save().then(event => {
@@ -121,14 +127,20 @@ function eventNewControllerFunction(EventFactory, $state) {
       $state.go('eventShow', {id: event.id})
     })
   }
-}
+
 
 function EventUpdateControllerFunction($stateParams, EventFactory){
-  this.event = EventFactory.get({id: $stateParams.id})
-  console.log(this.event);
+  const self = this
+  this.event = EventFactory.get({id: $stateParams.id}, function(response){
+    self.event = response.event
+  })
   this.update = function(){
-    this.event.$update({id: $stateParams.id})
-  }
+    EventFactory.update({id: $stateParams.id}, this.event).$promise.then(function(response){
+      self.event = response.event
+    }
+    )
+}
+
 }
 
 // Setup an event listener to make an API call once auth is complete
@@ -152,9 +164,3 @@ function getProfileData() {
 }
 
 //randomize word/codeGenerator
-function randomizer(){
-  var words = ['PurpleRock', 'redPaper', 'rainbowScissors', 'atmosphericPrisson', 'greenCofee', 'giatShirt', 'signRacoon', 'ballonAnt', 'randomCommit',
-  'whopperInsect', 'intenseShoe',  'conffettiSandwich', 'instantHomework', 'brainWind', 'twoWall', 'perfectGlass', 'commandRope', 'yellowGrass', 'rockandSoup'];
-var word = words[Math.floor(Math.random() * words.length)];
-return word;
-}
