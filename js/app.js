@@ -80,7 +80,7 @@ function Router($stateProvider){
     controllerAs: "vm"
   })
   .state("eventWelcome", {
-    url: "/welcome",
+    url: "/",
     templateUrl: "js/ng-views/welcome.html",
     controller: "EventWelcomeController",
     controllerAs: "vm"
