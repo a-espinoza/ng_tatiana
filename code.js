@@ -57,3 +57,15 @@
 //     })
 //   })
 // })
+
+
+
+
+
+
+// this.random = function(){
+//   var words = ['PurpleRock', 'redPaper', 'rainbowScissors', 'atmosphericPrisson', 'greenCofee', 'giatShirt', 'signRacoon', 'ballonAnt', 'randomCommit',
+//   'whopperInsect', 'intenseShoe',  'conffettiSandwich', 'instantHomework', 'brainWind', 'twoWall', 'perfectGlass', 'commandRope', 'yellowGrass', 'rockandSoup'];
+//   var word = words[Math.floor(Math.random() * words.length)];
+//   return word
+// }}
