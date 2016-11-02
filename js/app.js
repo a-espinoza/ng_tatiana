@@ -20,7 +20,13 @@ angular
     "EventFactory",
     "$stateParams",
     "UserFactory",
+    "$state",
     EventShowControllerFunction
+  ])
+  .controller("EventUpdateController", [
+    "$stateParams",
+    "EventFactory",
+    EventUpdateControllerFunction
   ])
   .controller("EventWelcomeController", [
     "EventFactory",
@@ -56,6 +62,12 @@ function Router($stateProvider){
     controller: "EventShowController",
     controllerAs: "vm"
   })
+  .state("eventUpdate", {
+    url: "events/:id/update",
+    templateUrl: "js/ng-views/update.html",
+    controller: "EventUpdateController",
+    controllerAs: "vm"
+  })
   .state("eventWelcome", {
     url: "/welcome",
     templateUrl: "js/ng-views/welcome.html",
@@ -65,7 +77,9 @@ function Router($stateProvider){
 }
 
 function EventFactoryFunction($resource) {
-  return $resource("http://localhost:3000/events/:id")
+  return $resource("http://localhost:3000/events/:id", {}, {
+    update: { method: "put" }
+  })
 }
 
 function UserFactoryFunction($resource) {
@@ -76,12 +90,17 @@ function eventIndexControllerFunction(EventFactory){
   this.events = EventFactory.query()
 }
 
-function EventShowControllerFunction(EventFactory, $stateParams, UserFactory) {
-  this.whole = EventFactory.get({id: $stateParams.id}, function(response){
-    console.log(response)
+function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $state) {
+  this.whole = EventFactory.get({id: $stateParams.id}, function(response) {
     this.title = response.event.title
     this.attendances = response.event.attendances
   })
+  this.update = function(){
+    $state.go('eventUpdate', {id: $stateParams.id})
+  }
+  this.destroy = function(){
+    console.log("delete");
+  }
 }
 
 function EventWelcomeControllerFunction(EventFactory) {
@@ -94,25 +113,31 @@ function eventNewControllerFunction(EventFactory, $state) {
     Event.$save().then(event => {
       console.log(event);
       $state.go('eventShow', {id: event.id})
-    }) //delete maybe
+    })
   }
 }
 
-// Linkedin API listening and calling
+function EventUpdateControllerFunction($stateParams, EventFactory){
+  this.event = EventFactory.get({id: $stateParams.id})
+  console.log(this.event);
+  this.update = function(){
+    this.event.$update({id: $stateParams.id})
+  }
+}
 
 // Setup an event listener to make an API call once auth is complete
 function onLinkedInLoad() {
-   IN.Event.on(IN, "auth", getProfileData);
+  IN.Event.on(IN, "auth", getProfileData);
 }
 
 // Handle the successful return from the API call
 function onSuccess(data) {
-   console.log(data);
+  console.log(data);
 }
 
 // Handle an error response from the API call
 function onError(error) {
-   console.log(error);
+  console.log(error);
 }
 
 // Use the API call wrapper to request the member's basic profile data

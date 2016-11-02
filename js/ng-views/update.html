@@ -1,0 +1,12 @@
+<h1>this is the update Liza page</h1>
+<h2>Update Your Event</h2>
+
+<form data-ng-submit="vm.update()">
+  <input placeholder="{{vm.event.event.title}}" data-ng-model="vm.event.title" />
+  <input placeholder="{{vm.event.event.code}}" data-ng-model="vm.event.code" />
+  <input placeholder="{{vm.event.event.location}}" data-ng-model="vm.event.location" />
+  <input placeholder="{{vm.event.event.time}}" data-ng-model="vm.event.time" />
+  <input placeholder="{{vm.event.event.date}}" data-ng-model="vm.event.date" />
+  <input placeholder="{{vm.event.event.cost}}" data-ng-model="vm.event.cost" />
+  <button type="submit">Update</button>
+</form>
