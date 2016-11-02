@@ -81,8 +81,8 @@ function Router($stateProvider){
     controllerAs: "vm"
   })
   .state("userCreate", {
-    url: '/users/:id',
-    templateUrl: 'js/ng-view/new_user.html',
+    url: '/users',
+    templateUrl: 'js/ng-views/new_user.html',
     controller: 'UserCreateController',
     controllerAs: 'vm'
   })
@@ -120,7 +120,6 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
 
 function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
-
 }
 
 function eventNewControllerFunction(EventFactory, $state) {
@@ -131,6 +130,7 @@ function eventNewControllerFunction(EventFactory, $state) {
       $state.go('eventShow', {id: event.id})
     })
   }
+}
 
   function EventUpdateControllerFunction($stateParams, EventFactory){
     const self = this
@@ -153,6 +153,7 @@ function UserCreateControllerFunction(){
       $state.go('eventWelcome', {id: event.id})
     })
   }
+}
   // function userCreate(UserFactory){
   //   console.log("HIII");
   //   // create users
@@ -179,5 +180,5 @@ function UserCreateControllerFunction(){
       function onError(error) {
         console.log(error);
       }
-    });
+    })
   }
