@@ -1,41 +1,45 @@
 angular
-.module("tatiana", [
-  "ui.router",
-  "ngResource"
-])
-.config([
-  "$stateProvider",
-  Router
-])
-.controller("eventIndexController", [
-  "EventFactory",
-  eventIndexControllerFunction
-])
-.controller("EventNewController", [
-  "EventFactory",
-  "$state",
-  eventNewControllerFunction
-])
-.controller("EventShowController", [
-  "EventFactory",
-  "$stateParams",
-  "UserFactory",
-  "$state",
-  EventShowControllerFunction
-])
-.controller("EventUpdateController", [
-  "$stateParams",
-  "EventFactory",
-  EventUpdateControllerFunction
-])
-.factory("EventFactory", [
-  "$resource",
-  EventFactoryFunction
-])
-.factory("UserFactory", [
-  "$resource",
-  UserFactoryFunction
-])
+  .module("tatiana", [
+    "ui.router",
+    "ngResource"
+  ])
+  .config([
+    "$stateProvider",
+    Router
+  ])
+  .controller("eventIndexController", [
+    "EventFactory",
+    eventIndexControllerFunction
+  ])
+  .controller("EventNewController", [
+    "EventFactory",
+    "$state",
+    eventNewControllerFunction
+  ])
+  .controller("EventShowController", [
+    "EventFactory",
+    "$stateParams",
+    "UserFactory",
+    "$state",
+    EventShowControllerFunction
+  ])
+  .controller("EventUpdateController", [
+    "$stateParams",
+    "EventFactory",
+    EventUpdateControllerFunction
+  ])
+  .controller("EventWelcomeController", [
+    "EventFactory",
+    EventWelcomeControllerFunction
+  ])
+  .factory("EventFactory", [
+    "$resource",
+    EventFactoryFunction
+  ])
+  .factory("UserFactory", [
+    "$resource",
+    UserFactoryFunction
+  ])
 
 // Routing
 function Router($stateProvider){
@@ -61,6 +65,18 @@ function Router($stateProvider){
     url: "events/:id/update",
     templateUrl: "js/ng-views/update.html",
     controller: "EventUpdateController",
+    controllerAs: "vm"
+  })
+  .state("eventUpdate", {
+    url: "events/:id/update",
+    templateUrl: "js/ng-views/update.html",
+    controller: "EventUpdateController",
+    controllerAs: "vm"
+  })
+  .state("eventWelcome", {
+    url: "/welcome",
+    templateUrl: "js/ng-views/welcome.html",
+    controller: "EventWelcomeController",
     controllerAs: "vm"
   })
 }
@@ -92,6 +108,11 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
   }
 }
 
+
+function EventWelcomeControllerFunction(EventFactory) {
+  console.log('welcome')
+}
+
 function eventNewControllerFunction(EventFactory, $state) {
   this.random = function(){
     var words = ['PurpleRock', 'redPaper', 'rainbowScissors', 'atmosphericPrisson', 'greenCofee', 'giatShirt', 'signRacoon', 'ballonAnt', 'randomCommit',
@@ -119,6 +140,7 @@ function EventUpdateControllerFunction($stateParams, EventFactory){
     }
     )
 }
+
 }
 
 // Setup an event listener to make an API call once auth is complete
