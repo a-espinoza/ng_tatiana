@@ -1,6 +1,7 @@
 
 body {
   background-image: url(desktop.jpeg);
+  font-family: 'Molengo', sans-serif;
   /*background-color: #E9EAEC;*/
 }
 
@@ -8,8 +9,9 @@ h1 {
   text-align: center;
 }
 
-a {
+.container a {
   text-decoration: none;
+  font-size: 30px;
   cursor: pointer;
 }
 
@@ -20,18 +22,16 @@ a {
 .container {
   display: flex;
   align-items: center;
-  height: 35em;
+  height: 30em;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .createEvent,
-.checkinEvent,
-.indexEvents,
-.listEvents {
+.checkinEvent {
   background-color: #7161EF;
   margin: 1em;
-  padding: 6em;
-  flex-grow: 1;
+  padding: 3em;
   text-align: center;
   border-radius: 15px;
 }
