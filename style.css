@@ -37,6 +37,12 @@ h1 {
   border-radius: 15px;
 }
 
+.createEvent:hover,
+.checkinEvent:hover {
+  color:
+}
+
+
 /*Form Styling*/
 
 .form-style {
@@ -88,3 +94,9 @@ form button {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+}
+
+form button:hover {
+  background: #957FEF;
+  cursor: pointer;
+}
