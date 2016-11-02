@@ -32,6 +32,10 @@ angular
     "EventFactory",
     EventWelcomeControllerFunction
   ])
+  .controller("EventCheckinController", [
+    "EventFactory",
+    EventCheckinControllerFunction
+  ])
   .factory("EventFactory", [
     "$resource",
     EventFactoryFunction
@@ -79,6 +83,12 @@ function Router($stateProvider){
     controller: "EventWelcomeController",
     controllerAs: "vm"
   })
+  .state("eventCheckin", {
+    url: "/check-in",
+    templateUrl: "js/ng-views/check-in.html",
+    controller: "EventCheckinController",
+    controllerAs: "vm"
+  })
 }
 
 function EventFactoryFunction($resource) {
@@ -111,6 +121,10 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
 
 function EventWelcomeControllerFunction(EventFactory) {
   console.log('welcome')
+}
+
+function EventCheckinControllerFunction(EventFactory) {
+  console.log('check in here');
 }
 
 function eventNewControllerFunction(EventFactory, $state) {
