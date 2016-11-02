@@ -22,6 +22,10 @@ angular
     "UserFactory",
     EventShowControllerFunction
   ])
+  .controller("EventWelcomeController", [
+    "EventFactory",
+    EventWelcomeControllerFunction
+  ])
   .factory("EventFactory", [
     "$resource",
     EventFactoryFunction
@@ -52,6 +56,12 @@ function Router($stateProvider){
     controller: "EventShowController",
     controllerAs: "vm"
   })
+  .state("eventWelcome", {
+    url: "/welcome",
+    templateUrl: "js/ng-views/welcome.html",
+    controller: "EventWelcomeController",
+    controllerAs: "vm"
+  })
 }
 
 function EventFactoryFunction($resource) {
@@ -68,26 +78,15 @@ function eventIndexControllerFunction(EventFactory){
 
 function EventShowControllerFunction(EventFactory, $stateParams, UserFactory) {
   this.whole = EventFactory.get({id: $stateParams.id}, function(response){
-    console.log(response);
+    console.log(response)
     this.title = response.event.title
     this.attendances = response.event.attendances
-  //   this.users = []
-  //   this.attendances.forEach(function(attendance){
-  //     var user = UserFactory.get({id: attendance.user_id}, function(response){
-  //       console.log(user);
-  //       this.users.push(user)
-  //       console.log(this.users);
-  //     })
-  //   })
-  // })
-})
+  })
 }
 
-// var User = $resource('/user/:userId', {userId:'@id'});
-// var user = User.get({userId:123}, function() {
-//   user.abc = true;
-//   user.$save();
-// });
+function EventWelcomeControllerFunction(EventFactory) {
+  console.log('welcome')
+}
 
 function eventNewControllerFunction(EventFactory, $state) {
   this.create = function(){
@@ -95,43 +94,11 @@ function eventNewControllerFunction(EventFactory, $state) {
     Event.$save().then(event => {
       console.log(event);
       $state.go('eventShow', {id: event.id})
-    })
+    }) //delete maybe
   }
 }
-  // this.create = function() {
-  //   console.log(this.event);
-  //   $.ajax({
-  //     url: 'http://localhost:3000/events',
-  //     type: "post",
-  //     dataType: "json",
-  //     data: {
-  //       event: {
-  //         title: this.event.title
-  //       }
-  //     }
-  //   }).done((response) => {
-  //     console.log(response)
-  //     this.event.$save()
-  //   }).fail(() => {
-  //     console.log("Ajax request fails!")
-  //   }).always(() => {
-  //     console.log("This always happens regardless of successful ajax request or not.")
-  //   })
-  // }
 
-
-// ajax to call our rails API
-// $.ajax({
-//   url: 'http://localhost:3000/events.json',
-//   type: "get",
-//   dataType: "json",
-// }).done((response) => {
-//   console.log(response)
-// }).fail(() => {
-//   console.log("Ajax request fails!")
-// }).always(() => {
-//   console.log("This always happens regardless of successful ajax request or not.")
-// })
+// Linkedin API listening and calling
 
 // Setup an event listener to make an API call once auth is complete
 function onLinkedInLoad() {
