@@ -1,35 +1,41 @@
 angular
-  .module("tatiana", [
-    "ui.router",
-    "ngResource"
-  ])
-  .config([
-    "$stateProvider",
-    Router
-  ])
-  .controller("eventIndexController", [
-    "EventFactory",
-    eventIndexControllerFunction
-  ])
-  .controller("EventNewController", [
-    "EventFactory",
-    "$state",
-    eventNewControllerFunction
-  ])
-  .controller("EventShowController", [
-    "EventFactory",
-    "$stateParams",
-    "UserFactory",
-    EventShowControllerFunction
-  ])
-  .factory("EventFactory", [
-    "$resource",
-    EventFactoryFunction
-  ])
-  .factory("UserFactory", [
-    "$resource",
-    UserFactoryFunction
-  ])
+.module("tatiana", [
+  "ui.router",
+  "ngResource"
+])
+.config([
+  "$stateProvider",
+  Router
+])
+.controller("eventIndexController", [
+  "EventFactory",
+  eventIndexControllerFunction
+])
+.controller("EventNewController", [
+  "EventFactory",
+  "$state",
+  eventNewControllerFunction
+])
+.controller("EventShowController", [
+  "EventFactory",
+  "$stateParams",
+  "UserFactory",
+  "$state",
+  EventShowControllerFunction
+])
+.controller("EventUpdateController", [
+  "$stateParams",
+  "EventFactory",
+  EventUpdateControllerFunction
+])
+.factory("EventFactory", [
+  "$resource",
+  EventFactoryFunction
+])
+.factory("UserFactory", [
+  "$resource",
+  UserFactoryFunction
+])
 
 // Routing
 function Router($stateProvider){
@@ -51,11 +57,18 @@ function Router($stateProvider){
     templateUrl: "js/ng-views/show.html",
     controller: "EventShowController",
     controllerAs: "vm"
+  }).state("eventUpdate", {
+    url: "events/:id/update",
+    templateUrl: "js/ng-views/update.html",
+    controller: "EventUpdateController",
+    controllerAs: "vm"
   })
 }
 
 function EventFactoryFunction($resource) {
-  return $resource("http://localhost:3000/events/:id")
+  return $resource("http://localhost:3000/events/:id", {}, {
+    update: { method: "put" }
+  })
 }
 
 function UserFactoryFunction($resource) {
@@ -66,28 +79,18 @@ function eventIndexControllerFunction(EventFactory){
   this.events = EventFactory.query()
 }
 
-function EventShowControllerFunction(EventFactory, $stateParams, UserFactory) {
+function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $state) {
   this.whole = EventFactory.get({id: $stateParams.id}, function(response){
-    console.log(response);
     this.title = response.event.title
     this.attendances = response.event.attendances
-  //   this.users = []
-  //   this.attendances.forEach(function(attendance){
-  //     var user = UserFactory.get({id: attendance.user_id}, function(response){
-  //       console.log(user);
-  //       this.users.push(user)
-  //       console.log(this.users);
-  //     })
-  //   })
-  // })
-})
+  })
+  this.update = function(){
+    $state.go('eventUpdate', {id: $stateParams.id})
+  }
+  this.destroy = function(){
+    console.log("delete");
+  }
 }
-
-// var User = $resource('/user/:userId', {userId:'@id'});
-// var user = User.get({userId:123}, function() {
-//   user.abc = true;
-//   user.$save();
-// });
 
 function eventNewControllerFunction(EventFactory, $state) {
   this.create = function(){
@@ -98,54 +101,28 @@ function eventNewControllerFunction(EventFactory, $state) {
     })
   }
 }
-  // this.create = function() {
-  //   console.log(this.event);
-  //   $.ajax({
-  //     url: 'http://localhost:3000/events',
-  //     type: "post",
-  //     dataType: "json",
-  //     data: {
-  //       event: {
-  //         title: this.event.title
-  //       }
-  //     }
-  //   }).done((response) => {
-  //     console.log(response)
-  //     this.event.$save()
-  //   }).fail(() => {
-  //     console.log("Ajax request fails!")
-  //   }).always(() => {
-  //     console.log("This always happens regardless of successful ajax request or not.")
-  //   })
-  // }
 
-
-// ajax to call our rails API
-// $.ajax({
-//   url: 'http://localhost:3000/events.json',
-//   type: "get",
-//   dataType: "json",
-// }).done((response) => {
-//   console.log(response)
-// }).fail(() => {
-//   console.log("Ajax request fails!")
-// }).always(() => {
-//   console.log("This always happens regardless of successful ajax request or not.")
-// })
+function EventUpdateControllerFunction($stateParams, EventFactory){
+  this.event = EventFactory.get({id: $stateParams.id})
+  console.log(this.event);
+  this.update = function(){
+    this.event.$update({id: $stateParams.id})
+}
+}
 
 // Setup an event listener to make an API call once auth is complete
 function onLinkedInLoad() {
-   IN.Event.on(IN, "auth", getProfileData);
+  IN.Event.on(IN, "auth", getProfileData);
 }
 
 // Handle the successful return from the API call
 function onSuccess(data) {
-   console.log(data);
+  console.log(data);
 }
 
 // Handle an error response from the API call
 function onError(error) {
-   console.log(error);
+  console.log(error);
 }
 
 // Use the API call wrapper to request the member's basic profile data
