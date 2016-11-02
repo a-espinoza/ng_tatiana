@@ -9,6 +9,7 @@ angular
   ])
   .controller("eventIndexController", [
     "EventFactory",
+    "UserFactory",
     eventIndexControllerFunction
   ])
   .controller("EventNewController", [
@@ -30,7 +31,12 @@ angular
   ])
   .controller("EventWelcomeController", [
     "EventFactory",
+    "UserFactory",
     EventWelcomeControllerFunction
+  ])
+  .controller("UserCreateController", [
+    "UserFactory",
+    userCreate
   ])
   .factory("EventFactory", [
     "$resource",
@@ -39,6 +45,7 @@ angular
   .factory("UserFactory", [
     "$resource",
     UserFactoryFunction
+
   ])
 
 // Routing
@@ -61,11 +68,6 @@ function Router($stateProvider){
     templateUrl: "js/ng-views/show.html",
     controller: "EventShowController",
     controllerAs: "vm"
-  }).state("eventUpdate", {
-    url: "events/:id/update",
-    templateUrl: "js/ng-views/update.html",
-    controller: "EventUpdateController",
-    controllerAs: "vm"
   })
   .state("eventUpdate", {
     url: "events/:id/update",
@@ -74,7 +76,7 @@ function Router($stateProvider){
     controllerAs: "vm"
   })
   .state("eventWelcome", {
-    url: "/welcome",
+    url: "/",
     templateUrl: "js/ng-views/welcome.html",
     controller: "EventWelcomeController",
     controllerAs: "vm"
@@ -91,8 +93,9 @@ function UserFactoryFunction($resource) {
   return $resource("http://localhost:3000/users/:id")
 }
 
-function eventIndexControllerFunction(EventFactory){
+function eventIndexControllerFunction(EventFactory, UserFactory){
   this.events = EventFactory.query()
+  console.log(UserFactory);
 }
 
 function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $state) {
@@ -109,8 +112,16 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
 }
 
 
-function EventWelcomeControllerFunction(EventFactory) {
-  console.log('welcome')
+function EventWelcomeControllerFunction(EventFactory, UserFactory) {
+
+}
+
+function userCreate(UserFactory){
+  console.log("usercreate")
+  console.log(window.data);
+  console.log(UserFactory);
+  user = new UserFactory()
+  console.log(user);
 }
 
 function eventNewControllerFunction(EventFactory, $state) {
@@ -150,8 +161,12 @@ function onLinkedInLoad() {
 
 // Handle the successful return from the API call
 function onSuccess(data) {
-  console.log(data);
+  window.data = data
+  userCreate()
 }
+
+
+
 
 // Handle an error response from the API call
 function onError(error) {
