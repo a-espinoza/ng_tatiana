@@ -2,5 +2,5 @@
 <a data-ui-sref="eventNew">New Event</a>
 
 <div data-ng-repeat="event in vm.events">
-  <p>{{event}}</p>
+  <p><a data-ui-sref="eventShow({id: event.id})">{{event}}</a></p>
 </div>
