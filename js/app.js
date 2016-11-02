@@ -36,6 +36,7 @@ angular
 ])
 .controller("UserCreateController", [
   "UserFactory",
+  "$state",
   UserCreateControllerFunction
 ])
 .factory("EventFactory", [
@@ -81,8 +82,8 @@ function Router($stateProvider){
     controllerAs: "vm"
   })
   .state("userCreate", {
-    url: '/users/:id',
-    templateUrl: 'js/ng-view/new_user.html',
+    url: '/users',
+    templateUrl: 'js/ng-views/new_user.html',
     controller: 'UserCreateController',
     controllerAs: 'vm'
   })
@@ -131,53 +132,54 @@ function eventNewControllerFunction(EventFactory, $state) {
       $state.go('eventShow', {id: event.id})
     })
   }
+}
 
-  function EventUpdateControllerFunction($stateParams, EventFactory){
-    const self = this
-    this.event = EventFactory.get({id: $stateParams.id}, function(response){
+function EventUpdateControllerFunction($stateParams, EventFactory){
+  const self = this
+  this.event = EventFactory.get({id: $stateParams.id}, function(response){
+    self.event = response.event
+  })
+  this.update = function(){
+    EventFactory.update({id: $stateParams.id}, this.event).$promise.then(function(response){
       self.event = response.event
     })
-    this.update = function(){
-      EventFactory.update({id: $stateParams.id}, this.event).$promise.then(function(response){
-        self.event = response.event
-      }
-    )
   }
 }
 
-function UserCreateControllerFunction(){
-  this.create = function(){
+function UserCreateControllerFunction(UserFactory, $state){
+  this.hand = function(){
     User = new UserFactory(this.user)
     User.$save().then(user => {
       console.log(user);
-      $state.go('eventWelcome', {id: event.id})
+      $state.go('eventWelcome')
     })
   }
-  // function userCreate(UserFactory){
-  //   console.log("HIII");
-  //   // create users
-  //
-  //   let user = window.data
-  //   console.log(user);
-  //
-  //   function createUser(user) {
-  //     UserFactory.create({
-  //       name: user.firstName
-  //     }).$promise.then( () => {
-  //       console.log(window.data);
-  //     })
-  //   }
-  //
-  // }
+}
+// function userCreate(UserFactory){
+//   console.log("HIII");
+//   // create users
+//
+//   let user = window.data
+//   console.log(user);
+//
+//   function createUser(user) {
+//     UserFactory.create({
+//       name: user.firstName
+//     }).$promise.then( () => {
+//       console.log(window.data);
+//     })
+//   }
+//
+// }
 
-  function onLinkedInLoad() {
-    IN.Event.on(IN, "auth", function(){
-      IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
-      function onSuccess(data, UserFactory) {
-        console.log(data);
-      }
-      function onError(error) {
-        console.log(error);
-      }
-    });
-  }
+function onLinkedInLoad() {
+  IN.Event.on(IN, "auth", function(){
+    IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
+    function onSuccess(data, UserFactory) {
+      console.log(data);
+    }
+    function onError(error) {
+      console.log(error);
+    }
+  })
+}
