@@ -61,11 +61,6 @@ function Router($stateProvider){
     templateUrl: "js/ng-views/show.html",
     controller: "EventShowController",
     controllerAs: "vm"
-  }).state("eventUpdate", {
-    url: "events/:id/update",
-    templateUrl: "js/ng-views/update.html",
-    controller: "EventUpdateController",
-    controllerAs: "vm"
   })
   .state("eventUpdate", {
     url: "events/:id/update",
@@ -139,7 +134,13 @@ function onLinkedInLoad() {
 // Handle the successful return from the API call
 function onSuccess(data) {
   console.log(data);
+  document.write(data);
+  document.write(data.emailAddress);
+    document.write(data.firstName);
+      document.write(data.id);
+        document.write(data.emailAddress)
 }
+
 
 // Handle an error response from the API call
 function onError(error) {
