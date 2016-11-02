@@ -58,6 +58,7 @@ h1 {
 .form-style input[placeholder="Title"],
 .form-style input[placeholder="Location"],
 .form-style input[placeholder="Time"],
+.form-style input[placeholder="Code"],
 .form-style input[placeholder="Date"],
 .form-style input[placeholder="Cost"]  {
       -webkit-transition: all 0.30s ease-in-out;
