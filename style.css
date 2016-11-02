@@ -1,5 +1,7 @@
+
 body {
-  background-color: #EBE1F2;
+  background-image: url(desktop.jpeg);
+  /*background-color: #E9EAEC;*/
 }
 
 h1 {
@@ -11,21 +13,27 @@ a {
   cursor: pointer;
 }
 
+.listEvents {
+  border: red dashed;
+}
+
 .container {
   display: flex;
   align-items: center;
-  height: 300px;
+  height: 35em;
   flex-wrap: wrap;
 }
 
 .createEvent,
 .checkinEvent,
-.indexEvents {
-  border: red dashed;
+.indexEvents,
+.listEvents {
+  background-color: #7161EF;
   margin: 1em;
-  padding: 2em 7em 2em 7em;
+  padding: 6em;
   flex-grow: 1;
   text-align: center;
+  border-radius: 15px;
 }
 
 /*Form Styling*/
