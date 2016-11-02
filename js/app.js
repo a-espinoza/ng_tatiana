@@ -61,6 +61,11 @@ function Router($stateProvider){
     templateUrl: "js/ng-views/show.html",
     controller: "EventShowController",
     controllerAs: "vm"
+  }).state("eventUpdate", {
+    url: "events/:id/update",
+    templateUrl: "js/ng-views/update.html",
+    controller: "EventUpdateController",
+    controllerAs: "vm"
   })
   .state("eventUpdate", {
     url: "events/:id/update",
@@ -91,7 +96,7 @@ function eventIndexControllerFunction(EventFactory){
 }
 
 function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $state) {
-  this.whole = EventFactory.get({id: $stateParams.id}, function(response) {
+  this.whole = EventFactory.get({id: $stateParams.id}, function(response){
     this.title = response.event.title
     this.attendances = response.event.attendances
   })
@@ -102,6 +107,7 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
     console.log("delete");
   }
 }
+
 
 function EventWelcomeControllerFunction(EventFactory) {
   console.log('welcome')
@@ -125,7 +131,6 @@ function EventUpdateControllerFunction($stateParams, EventFactory){
   }
 }
 
-// Linkedin API listening and calling
 // Setup an event listener to make an API call once auth is complete
 function onLinkedInLoad() {
   IN.Event.on(IN, "auth", getProfileData);
