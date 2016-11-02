@@ -85,13 +85,12 @@ function Router($stateProvider){
     controller: "EventWelcomeController",
     controllerAs: "vm"
   })
-
   .state("eventCheckin", {
     url: "/check-in",
     templateUrl: "js/ng-views/check-in.html",
     controller: "EventCheckinController",
     controllerAs: "vm"
-
+  })
   .state("userCreate", {
     url: '/users',
     templateUrl: 'js/ng-views/new_user.html',
