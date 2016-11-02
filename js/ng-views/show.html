@@ -1,3 +1,7 @@
-<h1>{{ vm.event.title }}</h1>
+<h1>{{ vm.whole.event.title }}</h1>
 
-<p>{{ vm.event.attendances[0] }}</p>
+<div data-ng-repeat="user in vm.whole.attendees">
+  <p>{{ user.name }}</p>
+</div>
+
+<button>Edit Event</button>

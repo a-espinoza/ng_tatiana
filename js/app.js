@@ -67,17 +67,34 @@ function eventIndexControllerFunction(EventFactory){
 }
 
 function EventShowControllerFunction(EventFactory, $stateParams, UserFactory) {
-  this.event = EventFactory.get({id: $stateParams.id}).$promise.then(function(response){
-    console.log(response.attendances);
-  })
+  this.whole = EventFactory.get({id: $stateParams.id}, function(response){
+    console.log(response);
+    this.title = response.event.title
+    this.attendances = response.event.attendances
+  //   this.users = []
+  //   this.attendances.forEach(function(attendance){
+  //     var user = UserFactory.get({id: attendance.user_id}, function(response){
+  //       console.log(user);
+  //       this.users.push(user)
+  //       console.log(this.users);
+  //     })
+  //   })
+  // })
+})
 }
+
+// var User = $resource('/user/:userId', {userId:'@id'});
+// var user = User.get({userId:123}, function() {
+//   user.abc = true;
+//   user.$save();
+// });
 
 function eventNewControllerFunction(EventFactory, $state) {
   this.create = function(){
     Event = new EventFactory(this.event)
     Event.$save().then(event => {
       console.log(event);
-      $state.go('eventShow', {event: event})
+      $state.go('eventShow', {id: event.id})
     })
   }
 }
