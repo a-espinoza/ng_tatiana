@@ -1,49 +1,56 @@
 angular
-  .module("tatiana", [
-    "ui.router",
-    "ngResource"
-  ])
-  .config([
-    "$stateProvider",
-    Router
-  ])
-  .controller("eventIndexController", [
-    "EventFactory",
-    eventIndexControllerFunction
-  ])
-  .controller("EventNewController", [
-    "EventFactory",
-    "$state",
-    eventNewControllerFunction
-  ])
-  .controller("EventShowController", [
-    "EventFactory",
-    "$stateParams",
-    "UserFactory",
-    "$state",
-    EventShowControllerFunction
-  ])
-  .controller("EventUpdateController", [
-    "$stateParams",
-    "EventFactory",
-    EventUpdateControllerFunction
-  ])
-  .controller("EventWelcomeController", [
-    "EventFactory",
-    EventWelcomeControllerFunction
-  ])
-  .controller("EventCheckinController", [
-    "EventFactory",
-    EventCheckinControllerFunction
-  ])
-  .factory("EventFactory", [
-    "$resource",
-    EventFactoryFunction
-  ])
-  .factory("UserFactory", [
-    "$resource",
-    UserFactoryFunction
-  ])
+.module("tatiana", [
+  "ui.router",
+  "ngResource"
+])
+.config([
+  "$stateProvider",
+  Router
+])
+.controller("eventIndexController", [
+  "EventFactory",
+  "UserFactory",
+  eventIndexControllerFunction
+])
+.controller("EventNewController", [
+  "EventFactory",
+  "$state",
+  eventNewControllerFunction
+])
+.controller("EventShowController", [
+  "EventFactory",
+  "$stateParams",
+  "UserFactory",
+  "$state",
+  EventShowControllerFunction
+])
+.controller("EventUpdateController", [
+  "$stateParams",
+  "EventFactory",
+  EventUpdateControllerFunction
+])
+.controller("EventWelcomeController", [
+  "EventFactory",
+  "UserFactory",
+  EventWelcomeControllerFunction
+])
+.controller("UserCreateController", [
+  "UserFactory",
+  "$state",
+  UserCreateControllerFunction
+])
+.factory("EventFactory", [
+  "$resource",
+  EventFactoryFunction
+])
+.factory("UserFactory", [
+  "$resource",
+  UserFactoryFunction
+])
+.controller("EventCheckinController", [
+  "EventFactory",
+  EventCheckinControllerFunction
+])
 
 // Routing
 function Router($stateProvider){
@@ -65,11 +72,6 @@ function Router($stateProvider){
     templateUrl: "js/ng-views/show.html",
     controller: "EventShowController",
     controllerAs: "vm"
-  }).state("eventUpdate", {
-    url: "events/:id/update",
-    templateUrl: "js/ng-views/update.html",
-    controller: "EventUpdateController",
-    controllerAs: "vm"
   })
   .state("eventUpdate", {
     url: "events/:id/update",
@@ -78,16 +80,23 @@ function Router($stateProvider){
     controllerAs: "vm"
   })
   .state("eventWelcome", {
-    url: "/welcome",
+    url: "/",
     templateUrl: "js/ng-views/welcome.html",
     controller: "EventWelcomeController",
     controllerAs: "vm"
   })
+
   .state("eventCheckin", {
     url: "/check-in",
     templateUrl: "js/ng-views/check-in.html",
     controller: "EventCheckinController",
     controllerAs: "vm"
+
+  .state("userCreate", {
+    url: '/users',
+    templateUrl: 'js/ng-views/new_user.html',
+    controller: 'UserCreateController',
+    controllerAs: 'vm'
   })
 }
 
@@ -98,10 +107,12 @@ function EventFactoryFunction($resource) {
 }
 
 function UserFactoryFunction($resource) {
-  return $resource("http://localhost:3000/users/:id")
+  return $resource("http://localhost:3000/users/:id", {}, {
+    create: { method: "POST" }
+  })
 }
 
-function eventIndexControllerFunction(EventFactory){
+function eventIndexControllerFunction(EventFactory, UserFactory){
   this.events = EventFactory.query()
 }
 
@@ -119,8 +130,8 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
 }
 
 
-function EventWelcomeControllerFunction(EventFactory) {
-  console.log('welcome')
+function EventWelcomeControllerFunction(EventFactory, UserFactory) {
+  console.log("welcome");
 }
 
 function EventCheckinControllerFunction(EventFactory) {
@@ -138,37 +149,51 @@ function eventNewControllerFunction(EventFactory, $state) {
 }
 
 function EventUpdateControllerFunction($stateParams, EventFactory){
-  this.event = EventFactory.get({id: $stateParams.id})
-  console.log(this.event);
+  const self = this
+  this.event = EventFactory.get({id: $stateParams.id}, function(response){
+    self.event = response.event
+  })
   this.update = function(){
-    this.event.$update({id: $stateParams.id})
+    EventFactory.update({id: $stateParams.id}, this.event).$promise.then(function(response){
+      self.event = response.event
+    })
   }
 }
 
-// Setup an event listener to make an API call once auth is complete
+function UserCreateControllerFunction(UserFactory, $state){
+  this.hand = function(){
+    User = new UserFactory(this.user)
+    User.$save().then(user => {
+      console.log(user);
+      $state.go('eventWelcome')
+    })
+  }
+}
+// function userCreate(UserFactory){
+//   console.log("HIII");
+//   // create users
+//
+//   let user = window.data
+//   console.log(user);
+//
+//   function createUser(user) {
+//     UserFactory.create({
+//       name: user.firstName
+//     }).$promise.then( () => {
+//       console.log(window.data);
+//     })
+//   }
+//
+// }
+
 function onLinkedInLoad() {
-  IN.Event.on(IN, "auth", getProfileData);
-}
-
-// Handle the successful return from the API call
-function onSuccess(data) {
-  console.log(data);
-}
-
-// Handle an error response from the API call
-function onError(error) {
-  console.log(error);
-}
-
-// Use the API call wrapper to request the member's basic profile data
-function getProfileData() {
-  IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
-}
-
-//randomize word/codeGenerator
-function randomizer(){
-  var words = ['PurpleRock', 'redPaper', 'rainbowScissors', 'atmosphericPrisson', 'greenCofee', 'giatShirt', 'signRacoon', 'ballonAnt', 'randomCommit',
-  'whopperInsect', 'intenseShoe',  'conffettiSandwich', 'instantHomework', 'brainWind', 'twoWall', 'perfectGlass', 'commandRope', 'yellowGrass', 'rockandSoup'];
-var word = words[Math.floor(Math.random() * words.length)];
-return word;
+  IN.Event.on(IN, "auth", function(){
+    IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
+    function onSuccess(data, UserFactory) {
+      console.log(data);
+    }
+    function onError(error) {
+      console.log(error);
+    }
+  })
 }
