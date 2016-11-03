@@ -39,6 +39,13 @@ angular
   "$state",
   UserCreateControllerFunction
 ])
+.controller("userShowController", [
+  "EventFactory",
+  "$stateParams",
+  "UserFactory",
+  "$state",
+  userShowControllerFunction
+])
 .factory("EventFactory", [
   "$resource",
   EventFactoryFunction
@@ -102,6 +109,12 @@ function Router($stateProvider){
     controller: 'UserCreateController',
     controllerAs: 'vm'
   })
+  .state("userShow", {
+    url: '/events/:id/users',
+    templateUrl: 'js/ng-views/userShow.html',
+    controller: 'userShowController',
+    controllerAs: 'vm'
+  })
 }
 
 function EventFactoryFunction($resource) {
@@ -162,7 +175,7 @@ function EventControllerFunction(EventFactory, $state) {
     EventFactory.query(function(response){
       response.forEach(function(e){
         if(e.code == self.event.code){
-        $state.go('eventShow', {id: e.id})
+        $state.go('userShow', {id: e.id})
         }
       })
     })
@@ -198,6 +211,20 @@ function UserCreateControllerFunction(UserFactory, $state){
       console.log(user);
       $state.go('eventWelcome')
     })
+  }
+}
+
+function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $state){
+  console.log("user show");
+  this.whole = EventFactory.get({id: $stateParams.id}, function(response){
+    this.title = response.event.title
+    this.attendances = response.event.attendances
+  })
+  this.event = function(){
+    $state.go("eventShow", {id: $stateParams.id})
+  }
+  this.home = function(){
+    $state.go("eventWelcome")
   }
 }
 
