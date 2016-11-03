@@ -43,12 +43,17 @@ angular
   "$resource",
   EventFactoryFunction
 ])
+// .factory("EventCodeFactory", [
+//   "$resource",
+//   EventCodeFactoryFunction
+// ])
 .factory("UserFactory", [
   "$resource",
   UserFactoryFunction
 ])
 .controller("EventCheckinController", [
   "EventFactory",
+  "$state",
   EventCheckinControllerFunction
 ])
 
@@ -85,13 +90,12 @@ function Router($stateProvider){
     controller: "EventWelcomeController",
     controllerAs: "vm"
   })
-
   .state("eventCheckin", {
     url: "/check-in",
     templateUrl: "js/ng-views/check-in.html",
     controller: "EventCheckinController",
     controllerAs: "vm"
-
+  })
   .state("userCreate", {
     url: '/users',
     templateUrl: 'js/ng-views/new_user.html',
@@ -101,10 +105,23 @@ function Router($stateProvider){
 }
 
 function EventFactoryFunction($resource) {
-  return $resource("http://localhost:3000/events/:id", {}, {
-    update: { method: "put" }
+  return $resource("http://localhost:3000/events/:id", {id: '@id'}, {
+    update: {
+      method: "put"
+    },
+    checkin: {
+      method: "get"
+    }
   })
 }
+//
+// function EventCodeFactoryFunction($resource) {
+//   return $resource("http://localhost:3000/decode/:id", {id: '@id'}, {
+//     decode: {
+//       method: "get"
+//     }
+//   })
+// }
 
 function UserFactoryFunction($resource) {
   return $resource("http://localhost:3000/users/:id", {}, {
@@ -130,13 +147,25 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
 }
 
 
+
+
 function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
 }
 
-function EventCheckinControllerFunction(EventFactory) {
-  console.log('check in here');
+function EventCheckinControllerFunction(EventFactory, $state) {
+  const self = this
+  this.check = function(){
+    EventFactory.query(function(response){
+      response.forEach(function(e){
+        if(e.code == self.event.code){
+        $state.go('eventShow', {id: e.id})
+        }
+      })
+    })
+  }
 }
+
 
 function eventNewControllerFunction(EventFactory, $state) {
   this.create = function(){

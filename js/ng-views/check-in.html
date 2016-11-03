@@ -3,6 +3,7 @@
 <h2>Check in here</h2>
 <form name="checkinForm" method="post">
   <input placeholder="Code" value="" data-ng-model="vm.event.code" />
-  <button type="button">Check In</button>
+  <input placeholder="Your Name" value="" data-ng-model="vm.users.code" />
+  <button type="button" data-ng-click="vm.check()">Check In</button>
 </form>
 </div>
