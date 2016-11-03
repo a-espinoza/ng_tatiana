@@ -27,6 +27,7 @@ angular
 .controller("EventUpdateController", [
   "$stateParams",
   "EventFactory",
+  "$state",
   EventUpdateControllerFunction
 ])
 .controller("EventWelcomeController", [
@@ -155,7 +156,8 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
     $state.go('eventUpdate', {id: $stateParams.id})
   }
   this.destroy = function(){
-    console.log("delete");
+    this.whole.$delete({id: $stateParams.id})
+    $state.go("eventWelcome")
   }
 }
 
@@ -190,14 +192,17 @@ function eventNewControllerFunction(EventFactory, $state) {
   }
 }
 
-function EventUpdateControllerFunction($stateParams, EventFactory){
+function EventUpdateControllerFunction($stateParams, EventFactory, $state){
   const self = this
+  //sets placeholder values
   this.event = EventFactory.get({id: $stateParams.id}, function(response){
     self.event = response.event
   })
+  //updates after second click
   this.update = function(){
-    EventFactory.update({id: $stateParams.id}, this.event).$promise.then(function(response){
+    EventFactory.update({id: $stateParams.id}, self.event).$promise.then(function(response){
       self.event = response.event
+      $state.go("eventShow", {id: $stateParams.id})
     })
   }
 }
