@@ -116,7 +116,7 @@ function Router($stateProvider){
     controllerAs: 'vm'
   })
 }
-
+//fix urls to link to heroku
 function EventFactoryFunction($resource) {
   return $resource("http://localhost:3000/events/:id", {id: '@id'}, {
     update: {
@@ -135,6 +135,7 @@ function EventFactoryFunction($resource) {
 //     }
 //   })
 // }
+//fix urls to link to heroku
 
 function UserFactoryFunction($resource) {
   return $resource("http://localhost:3000/users/:id", {}, {
@@ -167,8 +168,21 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
 
 function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
-
 }
+
+function EventCheckinControllerFunction(EventFactory, $state) {
+  const self = this
+  this.check = function(){
+    EventFactory.query(function(response){
+      response.forEach(function(e){
+        if(e.code == self.event.code){
+        $state.go('userShow', {id: e.id})
+        }
+      })
+    })
+  }
+}
+
 function EventControllerFunction(EventFactory, $state) {
   const self = this
   this.check = function(){

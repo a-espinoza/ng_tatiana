@@ -1,7 +1,8 @@
 <div class="form-style">
 <h2>Update Your Event</h2>
 
-<form data-ng-submit="vm.update()" onsubmit="return redirect()">
+
+<form data-ng-submit="vm.update()">
   <input placeholder="{{vm.event.event.title}}" required="required" data-ng-model="vm.event.title" />
   <input placeholder="{{vm.event.event.code}}" required="required" data-ng-model="vm.event.code" />
   <input placeholder="{{vm.event.event.location}}" data-ng-model="vm.event.location" />
