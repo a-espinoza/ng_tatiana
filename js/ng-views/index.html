@@ -1,1 +1,15 @@
-<h2>Index</h2>
+<h1>All events</h1>
+<a data-ui-sref="eventNew">New Event</a>
+
+<div class="flex">
+  <div data-ng-repeat="event in vm.events">
+    <div class="listEvents"
+    <p><a data-ui-sref="eventShow({id: event.id})">{{event.title}}</a></p>
+    <p>Code: {{event.code}}</p>
+    <p>Location: {{event.location}}</p>
+    <p>Time: {{event.time}}</p>
+    <p>Cost: {{event.cost}}</p>
+    <p>Date: {{event.date}}</p>
+  </div>
+</div>
+</div>
