@@ -1,10 +1,11 @@
+<div class="event-flex">
 <h1>Please Review Your Event:</h1>
 
-<div class="event-flex">
 <h2 class="event-header">{{vm.whole.event.title}}</h2>
 <div class="event-body">
   <p>🚩 Event Location: {{vm.whole.event.location}}</p>
   <p>🕑 Event Time: {{vm.whole.event.time}}</p>
+  <p>📅 Event Date: {{vm.whole.event.date}}</p>
   <p>💰 Event Cost: ${{vm.whole.event.cost}}</p>
   <br />
   <button data-ng-click="vm.update()">Update</button>
