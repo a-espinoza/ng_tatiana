@@ -209,6 +209,11 @@ form button:hover {
   justify-content: space-between;
   font-size: 1.3em;
   align-items: center;
+  color: white;
+}
+.usercontainer a {
+  text-decoration: none;
+  color:#0274B3;
 }
 .userboss {
   margin:2em;
