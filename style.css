@@ -13,6 +13,12 @@ h1 {
   font-size: 7em;
 }
 
+h2 {
+  font-family: 'Satisfy', cursive;
+  color: #957FEF;
+  font-size: 2em
+}
+
 span {
   font-family: 'Source Code Pro', monospace
 }
@@ -135,6 +141,7 @@ span {
 .form-style input[placeholder="Time"],
 .form-style input[placeholder="Code"],
 .form-style input[placeholder="Date"],
+.form-style input[placeholder="Your Name"],
 .form-style input[placeholder="Cost"] {
       font-family: 'Source Code Pro', monospace;
       font-size: 1em;
@@ -168,8 +175,46 @@ form button {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
+.userButton {
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: 0.1em;
+  font-size: 1em;
+  margin: 1em;
+  border: 1px solid #000;
+  border-radius: 3px;
+  background: #fff;
+  width: 100%;
+  padding: 3%;
+  color: #000;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
 
 form button:hover {
   background: #957FEF;
   cursor: pointer;
+}
+.usercontainer {
+  display:flex;
+  background-color: #957FEF;
+  font-family: 'Raleway', sans-serif;
+  margin: 10px;
+  padding: 1em;
+  text-align: center;
+  border-radius: 15px;
+  -webkit-box-shadow: 0 8px 16px -6px black;
+     -moz-box-shadow: 0 8px 16px -6px black;
+          box-shadow: 0 8px 16px -6px black;
+  justify-content: space-between;
+  font-size: 1.3em;
+  align-items: center;
+}
+.userboss {
+  margin:2em;
+  margin-bottom: 4em;
+}
+
+img {
+  width:100px;
 }
