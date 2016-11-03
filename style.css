@@ -1,51 +1,90 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
-@import url(http://fonts.googleapis.com/css?family=Federo);
 
-html, body {
-    margin: 0;
-    min-height: 100%;
-}
 
 body {
-    position: relative; /* needed for the overlay to extend when you scroll */
-    /* general styles */
-    padding: 30px;
-    font-family: 'Open Sans', sans-serif;
-    background: #f1c40f;
-    color: #fff;
-}
-
-/* overlay styles, all needed */
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 10;
-}
-
-/* just some content with arbitrary styles for explanation purposes */
-.modal {
-    width: 300px;
-    height: 100px;
-    line-height: 100px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -100px;
-    margin-left: -150px;
-    background-color: white;
-    border-radius: 5px;
-    text-align: center;
-    z-index: 11; /* 1px higher than the overlay layer */
-}
-
-.content {
-    margin: 30px;
+  background-image: url(desktop.jpeg);
+  font-family: 'Molengo', sans-serif;
+  /*background-color: #E9EAEC;*/
 }
 
 h1 {
-    font-family: 'Federo', sans-serif;
+  text-align: center;
 }
+
+.container a {
+  text-decoration: none;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.listEvents {
+  border: red dashed;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  height: 30em;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.createEvent,
+.checkinEvent {
+  background-color: #7161EF;
+  margin: 1em;
+  padding: 3em;
+  text-align: center;
+  border-radius: 15px;
+}
+
+/*Form Styling*/
+
+.form-style {
+    max-width: 400px;
+    margin: 10px auto;
+    padding: 16px;
+    background: #F7F7F7;
+}
+
+.form-style h2 {
+    background: #957FEF;
+    padding: 1em 0;
+    font-size: 140%;
+    font-weight: 300;
+    text-align: center;
+    color: #fff;
+    margin: -16px -16px 16px -16px;
+}
+
+.form-style input[placeholder="Title"],
+.form-style input[placeholder="Location"],
+.form-style input[placeholder="Time"],
+.form-style input[placeholder="Code"],
+.form-style input[placeholder="Date"],
+.form-style input[placeholder="Cost"]  {
+      -webkit-transition: all 0.30s ease-in-out;
+      -moz-transition: all 0.30s ease-in-out;
+      -ms-transition: all 0.30s ease-in-out;
+      -o-transition: all 0.30s ease-in-out;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      width: 100%;
+      background: #fff;
+      margin-bottom: 4%;
+      border: 1px solid #ccc;
+      padding: 3%;
+      color: #555;
+}
+
+form button {
+  margin: 0.6em 0;
+  border: 1px solid #000;
+  border-radius: 3px;
+  background: #fff;
+  width: 100%;
+  padding: 3%;
+  color: #000;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
