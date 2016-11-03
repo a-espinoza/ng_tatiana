@@ -140,17 +140,23 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
   })
   this.update = function(){
     $state.go('eventUpdate', {id: $stateParams.id})
+    console.log("working")
   }
   this.destroy = function(){
     console.log("delete");
   }
+  this.show = function(){
+    $state.go('eventShow')
+    console.log("fix me to redirect to show page event")
+  }
 }
+
 
 function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
 
 }
-function EventCheckinControllerFunction(EventFactory, $state) {
+function EventControllerFunction(EventFactory, $state) {
   const self = this
   this.check = function(){
     EventFactory.query(function(response){
