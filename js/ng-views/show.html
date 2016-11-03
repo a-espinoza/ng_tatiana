@@ -6,12 +6,16 @@
   <p>🚩 Event Location: {{vm.whole.event.location}}</p>
   <p>🕑 Event Time: {{vm.whole.event.time}}</p>
   <p>💰 Event Cost: ${{vm.whole.event.cost}}</p>
+  <br />
+  <button data-ng-click="vm.update()">Update</button>
+  <button data-ng-click="vm.destroy()">Delete</button>
+</div>
 
-<h2>All set? Great. Share your code with your attendees!</h2>
+<div class="code">
+  <h2>All set? Great. Share your code with your attendees:</h2>
+  <h1>{{vm.whole.event.code}}</h1>
 </div>
 </div>
-<button data-ng-click="vm.update()">Update</button>
-<button data-ng-click="vm.destroy()">Delete</button>
 
 <div data-ng-repeat="user in vm.whole.attendees">
   <p>{{user.name}}</p>

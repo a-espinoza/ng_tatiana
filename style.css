@@ -71,6 +71,37 @@ h1 {
   order: 2;
 }
 
+.event-body button {
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: 0.1em;
+  font-size: .5em;
+  margin: 0.6em 0;
+  border: 1px solid #000;
+  border-radius: 3px;
+  background: #fff;
+  width: 10%;
+  padding: 1%;
+  color: #000;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.event-body button:hover {
+  background: #957FEF;
+  cursor: pointer;
+}
+
+.code {
+  text-align: center;
+  font-family: 'Source Code Pro', monospace;
+  order: 3;
+}
+
+.code h1 {
+  font-size: 3.5em;
+  font-family: 'Source Code Pro', monospace;
+}
 
 /*Form Styling*/
 
