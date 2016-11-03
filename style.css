@@ -56,7 +56,8 @@ span {
   color: #fff;
 }
 
-.event-flex {
+.event-flex,
+.flex {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -75,7 +76,8 @@ span {
   order: 1;
 }
 
-.event-body {
+.event-body,
+.listEvents {
   background: #EEEEEE;
   text-align: center;
   font-family: 'Source Code Pro', monospace;
@@ -198,24 +200,33 @@ form button:hover {
   cursor: pointer;
 }
 
-.usercontainer {
-  display:flex;
-  background-color: #957FEF;
-  font-family: 'Raleway', sans-serif;
-  margin: 10px;
-  padding: 1em;
-  text-align: center;
-  border-radius: 15px;
-  -webkit-box-shadow: 0 8px 16px -6px black;
-     -moz-box-shadow: 0 8px 16px -6px black;
-          box-shadow: 0 8px 16px -6px black;
-  justify-content: space-between;
-  font-size: 1.3em;
-  align-items: center;
-}
 .userboss {
-  margin:2em;
-  margin-bottom: 4em;
+  /*margin:2em;
+  margin-bottom: 4em;*/
+  /*display: flex;*/
+  /*flex-wrap: wrap;*/
+  /*align-items: center;*/
+  /*align-content: center;*/
+  /*justify-content: center;*/
+display: flex;
+flex-wrap: wrap;
+flex-direction: row;
+justify-content: space-around;;
+align-items: center;
+padding: 2em;
+}
+
+.usercontainer {
+  width: 50%;
+  margin: 10px auto;
+  padding: 16px;
+  background: #F7F7F7;
+  border-radius: 4px;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 1.5em;
+  -webkit-box-shadow: 0 8px 16px -6px black;
+  -moz-box-shadow: 0 8px 16px -6px black;
+  box-shadow: 0 8px 16px -6px black;
 }
 
 img {
