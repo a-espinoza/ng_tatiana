@@ -115,7 +115,7 @@ function Router($stateProvider){
 }
 
 function EventFactoryFunction($resource) {
-  return $resource("http://localhost:3000/events/:id", {id: '@id'}, {
+  return $resource("https://tatiana-ng.herokuapp.com/", {}, {
     update: {
       method: "put"
     },
@@ -126,7 +126,7 @@ function EventFactoryFunction($resource) {
 }
 
 function UserFactoryFunction($resource) {
-  return $resource("http://localhost:3000/users/:id", {}, {
+  return $resource("https://tatiana-ng.herokuapp.com/", {}, {
     create: { method: "POST" }
   })
 }
