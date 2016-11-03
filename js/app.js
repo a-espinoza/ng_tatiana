@@ -91,6 +91,7 @@ function Router($stateProvider){
     templateUrl: "js/ng-views/check-in.html",
     controller: "EventCheckinController",
     controllerAs: "vm"
+  })
 
   .state("userCreate", {
     url: '/users',
@@ -99,6 +100,7 @@ function Router($stateProvider){
     controllerAs: 'vm'
   })
 }
+
 
 function EventFactoryFunction($resource) {
   return $resource("http://localhost:3000/events/:id", {}, {
