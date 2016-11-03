@@ -27,6 +27,7 @@ angular
 .controller("EventUpdateController", [
   "$stateParams",
   "EventFactory",
+  "$state",
   EventUpdateControllerFunction
 ])
 .controller("EventWelcomeController", [
@@ -39,6 +40,13 @@ angular
   "$state",
   UserCreateControllerFunction
 ])
+.controller("userShowController", [
+  "EventFactory",
+  "$stateParams",
+  "UserFactory",
+  "$state",
+  userShowControllerFunction
+])
 .factory("EventFactory", [
   "$resource",
   EventFactoryFunction
@@ -49,6 +57,7 @@ angular
 ])
 .controller("EventCheckinController", [
   "EventFactory",
+  "$state",
   EventCheckinControllerFunction
 ])
 
@@ -85,26 +94,34 @@ function Router($stateProvider){
     controller: "EventWelcomeController",
     controllerAs: "vm"
   })
-
   .state("eventCheckin", {
     url: "/check-in",
     templateUrl: "js/ng-views/check-in.html",
     controller: "EventCheckinController",
     controllerAs: "vm"
   })
-
   .state("userCreate", {
     url: '/users',
     templateUrl: 'js/ng-views/new_user.html',
     controller: 'UserCreateController',
     controllerAs: 'vm'
   })
+  .state("userShow", {
+    url: '/events/:id/users',
+    templateUrl: 'js/ng-views/userShow.html',
+    controller: 'userShowController',
+    controllerAs: 'vm'
+  })
 }
 
-
 function EventFactoryFunction($resource) {
-  return $resource("http://localhost:3000/events/:id", {}, {
-    update: { method: "put" }
+  return $resource("http://localhost:3000/events/:id", {id: '@id'}, {
+    update: {
+      method: "put"
+    },
+    checkin: {
+      method: "get"
+    }
   })
 }
 
@@ -127,18 +144,28 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
     $state.go('eventUpdate', {id: $stateParams.id})
   }
   this.destroy = function(){
-    console.log("delete");
+    this.whole.$delete({id: $stateParams.id})
+    $state.go("eventWelcome")
   }
 }
-
 
 function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
 }
 
-function EventCheckinControllerFunction(EventFactory) {
-  console.log('check in here');
+function EventCheckinControllerFunction(EventFactory, $state) {
+  const self = this
+  this.check = function(){
+    EventFactory.query(function(response){
+      response.forEach(function(e){
+        if(e.code == self.event.code){
+        $state.go('userShow', {id: e.id})
+        }
+      })
+    })
+  }
 }
+
 
 function eventNewControllerFunction(EventFactory, $state) {
   this.create = function(){
@@ -150,14 +177,17 @@ function eventNewControllerFunction(EventFactory, $state) {
   }
 }
 
-function EventUpdateControllerFunction($stateParams, EventFactory){
+function EventUpdateControllerFunction($stateParams, EventFactory, $state){
   const self = this
+  //sets placeholder values
   this.event = EventFactory.get({id: $stateParams.id}, function(response){
     self.event = response.event
   })
+  //updates after second click
   this.update = function(){
-    EventFactory.update({id: $stateParams.id}, this.event).$promise.then(function(response){
+    EventFactory.update({id: $stateParams.id}, self.event).$promise.then(function(response){
       self.event = response.event
+      $state.go("eventShow", {id: $stateParams.id})
     })
   }
 }
@@ -171,22 +201,19 @@ function UserCreateControllerFunction(UserFactory, $state){
     })
   }
 }
-// function userCreate(UserFactory){
-//   console.log("HIII");
-//   // create users
-//
-//   let user = window.data
-//   console.log(user);
-//
-//   function createUser(user) {
-//     UserFactory.create({
-//       name: user.firstName
-//     }).$promise.then( () => {
-//       console.log(window.data);
-//     })
-//   }
-//
-// }
+function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $state){
+  console.log("user show");
+  this.whole = EventFactory.get({id: $stateParams.id}, function(response){
+    this.title = response.event.title
+    this.attendances = response.event.attendances
+  })
+  this.event = function(){
+    $state.go("eventShow", {id: $stateParams.id})
+  }
+  this.home = function(){
+    $state.go("eventWelcome")
+  }
+}
 
 function onLinkedInLoad() {
   IN.Event.on(IN, "auth", function(){
