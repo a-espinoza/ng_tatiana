@@ -51,10 +51,6 @@ angular
   "$resource",
   EventFactoryFunction
 ])
-// .factory("EventCodeFactory", [
-//   "$resource",
-//   EventCodeFactoryFunction
-// ])
 .factory("UserFactory", [
   "$resource",
   UserFactoryFunction
@@ -119,7 +115,7 @@ function Router($stateProvider){
 }
 
 function EventFactoryFunction($resource) {
-  return $resource("http://localhost:3000/events/:id", {id: '@id'}, {
+  return $resource("https://tatiana-ng.herokuapp.com/events/:id", {}, {
     update: {
       method: "put"
     },
@@ -128,17 +124,9 @@ function EventFactoryFunction($resource) {
     }
   })
 }
-//
-// function EventCodeFactoryFunction($resource) {
-//   return $resource("http://localhost:3000/decode/:id", {id: '@id'}, {
-//     decode: {
-//       method: "get"
-//     }
-//   })
-// }
 
 function UserFactoryFunction($resource) {
-  return $resource("http://localhost:3000/users/:id", {}, {
+  return $resource("https://tatiana-ng.herokuapp.com/users/:id", {}, {
     create: { method: "POST" }
   })
 }
@@ -160,9 +148,6 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
     $state.go("eventWelcome")
   }
 }
-
-
-
 
 function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
@@ -229,22 +214,6 @@ function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $st
     $state.go("eventWelcome")
   }
 }
-// function userCreate(UserFactory){
-//   console.log("HIII");
-//   // create users
-//
-//   let user = window.data
-//   console.log(user);
-//
-//   function createUser(user) {
-//     UserFactory.create({
-//       name: user.firstName
-//     }).$promise.then( () => {
-//       console.log(window.data);
-//     })
-//   }
-//
-// }
 
 function onLinkedInLoad() {
   IN.Event.on(IN, "auth", function(){
