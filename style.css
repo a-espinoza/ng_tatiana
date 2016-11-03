@@ -1,40 +1,112 @@
-
-
 body {
-  background-image: url(desktop.jpeg);
-  font-family: 'Molengo', sans-serif;
-  /*background-color: #E9EAEC;*/
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color: #D7C9E0;
 }
 
 h1 {
   text-align: center;
 }
 
-.container a {
-  text-decoration: none;
-  font-size: 30px;
-  cursor: pointer;
+.welcome {
+  font-family: 'Satisfy', cursive;
+  color: #957FEF;
+  font-size: 7em;
 }
 
-.listEvents {
-  border: red dashed;
+span {
+  font-family: 'Source Code Pro', monospace
 }
 
 .container {
   display: flex;
   align-items: center;
-  height: 30em;
+  /*height: 30em;*/
   flex-wrap: wrap;
   justify-content: center;
 }
 
+.container a {
+  text-decoration: none;
+  font-size: 2em;
+  cursor: pointer;
+  font-family: 'Satisfy', cursive;
+}
+
 .createEvent,
 .checkinEvent {
-  background-color: #7161EF;
+  background-color: #957FEF;
   margin: 1em;
   padding: 3em;
   text-align: center;
   border-radius: 15px;
+  -webkit-box-shadow: 0 8px 16px -6px black;
+	   -moz-box-shadow: 0 8px 16px -6px black;
+	        box-shadow: 0 8px 16px -6px black;
+}
+
+.createEvent:hover,
+.checkinEvent:hover {
+  color: #fff;
+}
+
+.event-flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-family: 'Source Code Pro', monospace;
+}
+
+.event-header {
+  background: #957FEF;
+  padding: 1em 0;
+  font-weight: 300;
+  text-align: center;
+  color: #fff;
+  margin: 0 20% 0 20%;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 1.5em;
+  order: 1;
+}
+
+.event-body {
+  background: #EEEEEE;
+  text-align: center;
+  font-family: 'Source Code Pro', monospace;
+  margin: 0 20% 0 20%;
+  /*margin: 0 6em 0 6em;*/
+  order: 2;
+}
+
+.event-body button {
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: 0.1em;
+  font-size: .5em;
+  margin: 0.6em 0;
+  border: 1px solid #000;
+  border-radius: 3px;
+  background: #fff;
+  width: 10%;
+  padding: 1%;
+  color: #000;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.event-body button:hover {
+  background: #957FEF;
+  cursor: pointer;
+}
+
+.code {
+  text-align: center;
+  font-family: 'Source Code Pro', monospace;
+  order: 3;
+}
+
+.code h1 {
+  font-size: 3.5em;
+  font-family: 'Source Code Pro', monospace;
 }
 
 /*Form Styling*/
@@ -44,16 +116,18 @@ h1 {
     margin: 10px auto;
     padding: 16px;
     background: #F7F7F7;
+    border-radius: 4px;
 }
 
 .form-style h2 {
     background: #957FEF;
     padding: 1em 0;
-    font-size: 140%;
     font-weight: 300;
     text-align: center;
     color: #fff;
     margin: -16px -16px 16px -16px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.5em;
 }
 
 .form-style input[placeholder="Title"],
@@ -61,7 +135,9 @@ h1 {
 .form-style input[placeholder="Time"],
 .form-style input[placeholder="Code"],
 .form-style input[placeholder="Date"],
-.form-style input[placeholder="Cost"]  {
+.form-style input[placeholder="Cost"] {
+      font-family: 'Source Code Pro', monospace;
+      font-size: 1em;
       -webkit-transition: all 0.30s ease-in-out;
       -moz-transition: all 0.30s ease-in-out;
       -ms-transition: all 0.30s ease-in-out;
@@ -78,6 +154,9 @@ h1 {
 }
 
 form button {
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: 0.1em;
+  font-size: 1em;
   margin: 0.6em 0;
   border: 1px solid #000;
   border-radius: 3px;
@@ -88,3 +167,9 @@ form button {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+}
+
+form button:hover {
+  background: #957FEF;
+  cursor: pointer;
+}

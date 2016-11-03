@@ -1,10 +1,8 @@
-<h1>Enter in details below</h1>
-
 <div class="form-style">
 <h2>Create new event</h2>
 <form name="newForm" method="post">
-  <input placeholder="Title" data-ng-model="vm.event.title" />
-  <input placeholder="Code" value="" data-ng-model="vm.event.code" />
+  <input placeholder="Title" required="required" data-ng-model="vm.event.title" />
+  <input placeholder="Code" required="required" data-ng-model="vm.event.code" />
   <input placeholder="Location" data-ng-model="vm.event.location" />
   <input placeholder="Time" data-ng-model="vm.event.time" />
   <input placeholder="Date" type="date" data-ng-model="vm.event.date" />

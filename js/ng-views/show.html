@@ -1,8 +1,23 @@
-<h1>{{vm.whole.event.title}}</h1>
+<div class="event-flex">
+<h1>Please Review Your Event:</h1>
+
+<h2 class="event-header">{{vm.whole.event.title}}</h2>
+<div class="event-body">
+  <p>🚩 Event Location: {{vm.whole.event.location}}</p>
+  <p>🕑 Event Time: {{vm.whole.event.time}}</p>
+  <p>📅 Event Date: {{vm.whole.event.date}}</p>
+  <p>💰 Event Cost: ${{vm.whole.event.cost}}</p>
+  <br />
+  <button data-ng-click="vm.update()">Update</button>
+  <button data-ng-click="vm.destroy()">Delete</button>
+</div>
+
+<div class="code">
+  <h2>All set? Great. Share your code with your attendees:</h2>
+  <h1>{{vm.whole.event.code}}</h1>
+</div>
+</div>
 
 <div data-ng-repeat="user in vm.whole.attendees">
   <p>{{user.name}}</p>
 </div>
-
-  <button data-ng-click="vm.update()">Update</button>
-  <button data-ng-click="vm.destroy()">Delete</button>
