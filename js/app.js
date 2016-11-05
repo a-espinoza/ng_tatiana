@@ -59,9 +59,14 @@ angular
   "$resource",
   UserFactoryFunction
 ])
+.factory("AttendanceFactory", [
+  "$resource",
+  AttendanceFactoryFunction
+])
 .controller("EventCheckinController", [
   "EventFactory",
   "$state",
+  "UserFactory",
   EventCheckinControllerFunction
 ])
 
@@ -128,6 +133,11 @@ function EventFactoryFunction($resource) {
     }
   })
 }
+function AttendanceFactoryFunction($resource) {
+  return $resource("http://localhost:3000/attendances/:id", {}, {
+    create: { method: "POST" }
+  })
+}
 //
 // function EventCodeFactoryFunction($resource) {
 //   return $resource("http://localhost:3000/decode/:id", {id: '@id'}, {
@@ -168,18 +178,34 @@ function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
 }
 
-function EventCheckinControllerFunction(EventFactory, $state) {
+function EventCheckinControllerFunction(EventFactory, $state, UserFactory) {
   const self = this
-  this.check = function(){
+  this.check = function(window){
+
     EventFactory.query(function(response){
       response.forEach(function(e){
         if(e.code == self.event.code){
-        $state.go('userShow', {id: e.id})
+          window.pizza = e.id
+          $state.go('userShow', {id: e.id})
         }
       })
     })
+
+    UserFactory.query(function(response){
+      response.forEach(function(u){
+        if(u.name == self.users.code){
+          self.users.id = u.id
+        }
+      })
+    })
+    console.log(window.pizza);
   }
 }
+// user = UserFactory.get({id: self.users.id})
+// event = EventFactory.get({id: self.event.id}, function(response){
+//   console.log(response);
+// console.log(self.event.id);
+// })
 
 
 function eventNewControllerFunction(EventFactory, $state) {
@@ -217,7 +243,6 @@ function UserCreateControllerFunction(UserFactory, $state){
   }
 }
 function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $state){
-  console.log("user show");
   this.whole = EventFactory.get({id: $stateParams.id}, function(response){
     this.title = response.event.title
     this.attendances = response.event.attendances
@@ -246,14 +271,14 @@ function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $st
 //
 // }
 
-function onLinkedInLoad() {
-  IN.Event.on(IN, "auth", function(){
-    IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
-    function onSuccess(data, UserFactory) {
-      console.log(data);
-    }
-    function onError(error) {
-      console.log(error);
-    }
-  })
-}
+// function onLinkedInLoad() {
+//   IN.Event.on(IN, "auth", function(){
+//     IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
+//     function onSuccess(data, UserFactory) {
+//       console.log(data);
+//     }
+//     function onError(error) {
+//       console.log(error);
+//     }
+//   })
+// }
