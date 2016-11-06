@@ -69,6 +69,10 @@ angular
   "UserFactory",
   EventCheckinControllerFunction
 ])
+.controller("AttendanceCreateController", [
+  "$stateParams",
+  AttendanceCreateControllerFunction
+])
 
 // Routing
 function Router($stateProvider){
@@ -120,6 +124,15 @@ function Router($stateProvider){
     templateUrl: 'js/ng-views/userShow.html',
     controller: 'userShowController',
     controllerAs: 'vm'
+  })
+  .state("attendanceCreate", {
+    url: '/attendance',
+    templateUrl: 'js/ng-views/attendanceCreate.html',
+    controller: 'AttendanceCreateController',
+    controllerAs: 'vm',
+    params: {
+      obj: null
+    }
   })
 }
 
@@ -180,26 +193,31 @@ function EventWelcomeControllerFunction(EventFactory, UserFactory) {
 
 function EventCheckinControllerFunction(EventFactory, $state, UserFactory) {
   const self = this
-  this.check = function(window){
-
+  this.check = function(){
     EventFactory.query(function(response){
       response.forEach(function(e){
         if(e.code == self.event.code){
-          window.pizza = e.id
-          $state.go('userShow', {id: e.id})
-        }
-      })
-    })
+          self.event.id = e.id
 
-    UserFactory.query(function(response){
-      response.forEach(function(u){
-        if(u.name == self.users.code){
-          self.users.id = u.id
+          UserFactory.query(function(response){
+            response.forEach(function(u){
+              if(u.name == self.users.code){
+                self.users.id = u.id
+                var object = {
+                  user_id: self.users.id,
+                  event_id: self.event.id
+                }
+                $state.go('attendanceCreate', {obj: object})
+              }
+            })
+          })
         }
       })
     })
-    console.log(window.pizza);
   }
+}
+function AttendanceCreateControllerFunction($stateParams){
+  console.log($stateParams);
 }
 // user = UserFactory.get({id: self.users.id})
 // event = EventFactory.get({id: self.event.id}, function(response){
