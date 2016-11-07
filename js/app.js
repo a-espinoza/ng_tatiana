@@ -71,6 +71,8 @@ angular
 ])
 .controller("AttendanceCreateController", [
   "$stateParams",
+  "AttendanceFactory",
+  "$state",
   AttendanceCreateControllerFunction
 ])
 
@@ -216,8 +218,13 @@ function EventCheckinControllerFunction(EventFactory, $state, UserFactory) {
     })
   }
 }
-function AttendanceCreateControllerFunction($stateParams){
-  console.log($stateParams);
+function AttendanceCreateControllerFunction($stateParams, AttendanceFactory, $state){
+  Attendance = new AttendanceFactory({user_id: $stateParams.obj.user_id, event_id: $stateParams.obj.event_id})
+  Attendance.$save().then(attendance => {
+    console.log(attendance);
+    console.log($stateParams.obj.event_id);
+    $state.go('userShow', {id: $stateParams.obj.event_id})
+  })
 }
 // user = UserFactory.get({id: self.users.id})
 // event = EventFactory.get({id: self.event.id}, function(response){
