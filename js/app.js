@@ -59,10 +59,21 @@ angular
   "$resource",
   UserFactoryFunction
 ])
+.factory("AttendanceFactory", [
+  "$resource",
+  AttendanceFactoryFunction
+])
 .controller("EventCheckinController", [
   "EventFactory",
   "$state",
+  "AttendanceFactory",
   EventCheckinControllerFunction
+])
+.controller("AttendanceCreateController", [
+  "$stateParams",
+  "AttendanceFactory",
+  "$state",
+  AttendanceCreateControllerFunction
 ])
 
 // Routing
@@ -116,18 +127,35 @@ function Router($stateProvider){
     controller: 'userShowController',
     controllerAs: 'vm'
   })
+  .state("attendanceCreate", {
+    url: '/events/:id/users',
+    templateUrl: 'js/ng-views/userShow.html',
+    controller: 'AttendanceCreateController',
+    controllerAs: 'vm'
+  })
+}
+
+function AttendanceFactoryFunction($resource) {
+  return $resource("http://localhost:3000/attendances/checkin/:user/:event",
+  {
+    user: '@user',
+    event: '@event'
+  }, {
+    create: { method: "POST" }
+  })
 }
 
 function EventFactoryFunction($resource) {
-  return $resource("http://localhost:3000/events/:id", {id: '@id'}, {
-    update: {
-      method: "put"
-    },
-    checkin: {
-      method: "get"
-    }
+  return $resource("http://localhost:3000/events/:id", {}, {
+      update: {
+        method: "put"
+      },
+      checkin: {
+        method: "get"
+      }
   })
 }
+
 //
 // function EventCodeFactoryFunction($resource) {
 //   return $resource("http://localhost:3000/decode/:id", {id: '@id'}, {
@@ -159,6 +187,9 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
     this.whole.$delete({id: $stateParams.id})
     $state.go("eventWelcome")
   }
+  this.event = function(){
+    $state.go('userShow', {id: $stateParams.id})
+  }
 }
 
 
@@ -168,17 +199,32 @@ function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
 }
 
-function EventCheckinControllerFunction(EventFactory, $state) {
+function EventCheckinControllerFunction(EventFactory, $state, AttendanceFactory) {
   const self = this
   this.check = function(){
+    AttendanceFactory.create({
+      user: self.users.code,
+      event: self.event.code
+    }, function(response){
+      console.log(response);
+    })
     EventFactory.query(function(response){
       response.forEach(function(e){
         if(e.code == self.event.code){
-        $state.go('userShow', {id: e.id})
-        }
-      })
-    })
+          this.event.id = e.id
+          $state.go("attendanceCreate", {id: this.event.id})
   }
+})
+})
+}
+}
+function AttendanceCreateControllerFunction($stateParams, AttendanceFactory, $state){
+  // Attendance = new AttendanceFactory({user_id: $stateParams.obj.user_id, event_id: $stateParams.obj.event_id})
+  // Attendance.$save().then(attendance => {
+  //   console.log(attendance);
+  //   console.log($stateParams.obj.event_id);
+  //   $state.go('userShow', {id: $stateParams.obj.event_id})
+  // })
 }
 
 
@@ -217,7 +263,6 @@ function UserCreateControllerFunction(UserFactory, $state){
   }
 }
 function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $state){
-  console.log("user show");
   this.whole = EventFactory.get({id: $stateParams.id}, function(response){
     this.title = response.event.title
     this.attendances = response.event.attendances
@@ -246,14 +291,14 @@ function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $st
 //
 // }
 
-function onLinkedInLoad() {
-  IN.Event.on(IN, "auth", function(){
-    IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
-    function onSuccess(data, UserFactory) {
-      console.log(data);
-    }
-    function onError(error) {
-      console.log(error);
-    }
-  })
-}
+// function onLinkedInLoad() {
+//   IN.Event.on(IN, "auth", function(){
+//     IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
+//     function onSuccess(data, UserFactory) {
+//       console.log(data);
+//     }
+//     function onError(error) {
+//       console.log(error);
+//     }
+//   })
+// }
