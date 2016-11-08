@@ -128,7 +128,7 @@ function Router($stateProvider){
     controllerAs: 'vm'
   })
   .state("attendanceCreate", {
-    url: '/attendance',
+    url: '/attendances/checkin/:user/:event',
     templateUrl: 'js/ng-views/attendanceCreate.html',
     controller: 'AttendanceCreateController',
     controllerAs: 'vm',
@@ -138,21 +138,27 @@ function Router($stateProvider){
   })
 }
 
-function EventFactoryFunction($resource) {
-  return $resource("http://localhost:3000/events/:id", {id: '@id'}, {
-    update: {
-      method: "put"
-    },
-    checkin: {
-      method: "get"
-    }
-  })
-}
 function AttendanceFactoryFunction($resource) {
-  return $resource("http://localhost:3000/attendances/:id", {}, {
-    create: { method: "POST" }
+  return $resource("http://localhost:3000/attendances/checkin/:user/:event",
+  {
+    user: '@user',
+    event: '@event'
+  }, {
+    checkin: { method: "POST" }
   })
 }
+
+function EventFactoryFunction($resource) {
+  return $resource("http://localhost:3000/events/:id", {}, {
+      update: {
+        method: "put"
+      },
+      checkin: {
+        method: "get"
+      }
+  })
+}
+
 //
 // function EventCodeFactoryFunction($resource) {
 //   return $resource("http://localhost:3000/decode/:id", {id: '@id'}, {
@@ -184,6 +190,9 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
     this.whole.$delete({id: $stateParams.id})
     $state.go("eventWelcome")
   }
+  this.event = function(){
+    $state.go('userShow', {id: $stateParams.id})
+  }
 }
 
 
@@ -196,26 +205,28 @@ function EventWelcomeControllerFunction(EventFactory, UserFactory) {
 function EventCheckinControllerFunction(EventFactory, $state, UserFactory) {
   const self = this
   this.check = function(){
-    EventFactory.query(function(response){
-      response.forEach(function(e){
-        if(e.code == self.event.code){
-          self.event.id = e.id
+    console.log(self.event.code);
+    EventFactory.get({event:self.event.code}, function(response){
+      console.log(response);
+      // response.forEach(function(e){
+      //   if(e.code == self.event.code){
+      //     self.event.id = e.id
 
           UserFactory.query(function(response){
             response.forEach(function(u){
               if(u.name == self.users.code){
                 self.users.id = u.id
                 var object = {
-                  user_id: self.users.id,
-                  event_id: self.event.id
+                  user: self.users.id,
+                  event: self.event.id
                 }
-                $state.go('attendanceCreate', {obj: object})
+                $state.go('attendanceCreate', {event: )
               }
             })
           })
-        }
-      })
-    })
+        })
+    //   })
+    // })
   }
 }
 function AttendanceCreateControllerFunction($stateParams, AttendanceFactory, $state){
