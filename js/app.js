@@ -66,7 +66,7 @@ angular
 .controller("EventCheckinController", [
   "EventFactory",
   "$state",
-  "UserFactory",
+  "AttendanceFactory",
   EventCheckinControllerFunction
 ])
 .controller("AttendanceCreateController", [
@@ -199,18 +199,26 @@ function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
 }
 
-function EventCheckinControllerFunction(EventFactory, $state, UserFactory) {
+function EventCheckinControllerFunction(EventFactory, $state, AttendanceFactory) {
+  const self = this
   this.check = function(){
-    EventFactory.query({event:self.event.code}, function(response){
+    AttendanceFactory.create({
+      user: self.users.code,
+      event: self.event.code
+    }, function(response){
       console.log(response);
-      // response.forEach(function(e){
-      //   if(e.code == self.event.code){
-      //     self.event.id = e.id
-    $state.go("attendanceCreate")
+    })
+    EventFactory.query(function(response){
+      response.forEach(function(e){
+        if(e.code == self.event.code){
+          this.event.id = e.id
+          $state.go("attendanceCreate", {id: this.event.id})
   }
+})
+})
+}
 }
 function AttendanceCreateControllerFunction($stateParams, AttendanceFactory, $state){
-  console.log($stateParams);
   // Attendance = new AttendanceFactory({user_id: $stateParams.obj.user_id, event_id: $stateParams.obj.event_id})
   // Attendance.$save().then(attendance => {
   //   console.log(attendance);
