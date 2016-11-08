@@ -201,6 +201,11 @@ function EventWelcomeControllerFunction(EventFactory, UserFactory) {
 
 function EventCheckinControllerFunction(EventFactory, $state, UserFactory) {
   this.check = function(){
+    EventFactory.query({event:self.event.code}, function(response){
+      console.log(response);
+      // response.forEach(function(e){
+      //   if(e.code == self.event.code){
+      //     self.event.id = e.id
     $state.go("attendanceCreate")
   }
 }
