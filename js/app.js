@@ -128,13 +128,10 @@ function Router($stateProvider){
     controllerAs: 'vm'
   })
   .state("attendanceCreate", {
-    url: '/attendances/checkin/:user/:event',
-    templateUrl: 'js/ng-views/attendanceCreate.html',
+    url: '/events/:id/users',
+    templateUrl: 'js/ng-views/userShow.html',
     controller: 'AttendanceCreateController',
-    controllerAs: 'vm',
-    params: {
-      obj: null
-    }
+    controllerAs: 'vm'
   })
 }
 
@@ -144,7 +141,7 @@ function AttendanceFactoryFunction($resource) {
     user: '@user',
     event: '@event'
   }, {
-    checkin: { method: "POST" }
+    create: { method: "POST" }
   })
 }
 
@@ -203,45 +200,19 @@ function EventWelcomeControllerFunction(EventFactory, UserFactory) {
 }
 
 function EventCheckinControllerFunction(EventFactory, $state, UserFactory) {
-  const self = this
   this.check = function(){
-    console.log(self.event.code);
-    EventFactory.get({event:self.event.code}, function(response){
-      console.log(response);
-      // response.forEach(function(e){
-      //   if(e.code == self.event.code){
-      //     self.event.id = e.id
-
-          UserFactory.query(function(response){
-            response.forEach(function(u){
-              if(u.name == self.users.code){
-                self.users.id = u.id
-                var object = {
-                  user: self.users.id,
-                  event: self.event.id
-                }
-                $state.go('attendanceCreate', {event: )
-              }
-            })
-          })
-        })
-    //   })
-    // })
+    $state.go("attendanceCreate")
   }
 }
 function AttendanceCreateControllerFunction($stateParams, AttendanceFactory, $state){
-  Attendance = new AttendanceFactory({user_id: $stateParams.obj.user_id, event_id: $stateParams.obj.event_id})
-  Attendance.$save().then(attendance => {
-    console.log(attendance);
-    console.log($stateParams.obj.event_id);
-    $state.go('userShow', {id: $stateParams.obj.event_id})
-  })
+  console.log($stateParams);
+  // Attendance = new AttendanceFactory({user_id: $stateParams.obj.user_id, event_id: $stateParams.obj.event_id})
+  // Attendance.$save().then(attendance => {
+  //   console.log(attendance);
+  //   console.log($stateParams.obj.event_id);
+  //   $state.go('userShow', {id: $stateParams.obj.event_id})
+  // })
 }
-// user = UserFactory.get({id: self.users.id})
-// event = EventFactory.get({id: self.event.id}, function(response){
-//   console.log(response);
-// console.log(self.event.id);
-// })
 
 
 function eventNewControllerFunction(EventFactory, $state) {
