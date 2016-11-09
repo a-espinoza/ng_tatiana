@@ -153,7 +153,7 @@ function EventWelcomeControllerFunction(EventFactory, UserFactory) {
   console.log("welcome");
 }
 
-function EventCheckinControllerFunction(EventFactory, $state) {
+function Event‘‘Checkin’’ControllerFunction(EventFactory, $state) {
   const self = this
   this.check = function(){
     EventFactory.query(function(response){
