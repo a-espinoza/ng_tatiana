@@ -33,6 +33,8 @@ angular
 .controller("EventWelcomeController", [
   "EventFactory",
   "UserFactory",
+  "$state",
+  "UserIdFactory",
   EventWelcomeControllerFunction
 ])
 .controller("UserCreateController", [
@@ -47,14 +49,16 @@ angular
   "$state",
   userShowControllerFunction
 ])
+.controller("EventCheckinController", [
+  "EventFactory",
+  "$state",
+  "AttendanceFactory",
+  EventCheckinControllerFunction
+])
 .factory("EventFactory", [
   "$resource",
   EventFactoryFunction
 ])
-// .factory("EventCodeFactory", [
-//   "$resource",
-//   EventCodeFactoryFunction
-// ])
 .factory("UserFactory", [
   "$resource",
   UserFactoryFunction
@@ -63,17 +67,9 @@ angular
   "$resource",
   AttendanceFactoryFunction
 ])
-.controller("EventCheckinController", [
-  "EventFactory",
-  "$state",
-  "AttendanceFactory",
-  EventCheckinControllerFunction
-])
-.controller("AttendanceCreateController", [
-  "$stateParams",
-  "AttendanceFactory",
-  "$state",
-  AttendanceCreateControllerFunction
+.factory("UserIdFactory", [
+  '$resource',
+  UserIdFactoryFunction
 ])
 
 // Routing
@@ -130,7 +126,7 @@ function Router($stateProvider){
   .state("attendanceCreate", {
     url: '/events/:id/users',
     templateUrl: 'js/ng-views/userShow.html',
-    controller: 'AttendanceCreateController',
+    controller: 'EventCheckinController',
     controllerAs: 'vm'
   })
 }
@@ -141,34 +137,38 @@ function AttendanceFactoryFunction($resource) {
     user: '@user',
     event: '@event'
   }, {
-    create: { method: "POST" }
+    create: { method: "post" }
   })
 }
 //fix urls to link to heroku
 function EventFactoryFunction($resource) {
   return $resource("http://localhost:3000/events/:id", {}, {
-      update: {
-        method: "put"
-      },
-      checkin: {
-        method: "get"
-      }
+    update: {
+      method: "put"
+    },
+    checkin: {
+      method: "get"
+    }
   })
 }
 
-//
-// function EventCodeFactoryFunction($resource) {
-//   return $resource("http://localhost:3000/decode/:id", {id: '@id'}, {
-//     decode: {
-//       method: "get"
-//     }
-//   })
-// }
-//fix urls to link to heroku
-
 function UserFactoryFunction($resource) {
   return $resource("http://localhost:3000/users/:id", {}, {
-    create: { method: "POST" }
+    create: {
+      method: "post"
+    },
+    get: {
+      method: "get"
+    }
+  })
+}
+
+function UserIdFactoryFunction($resource){
+  return $resource("http://localhost:3000/users/id/:linkedinId",
+  {
+    linkedinId: '@linkedinId'
+  }, {
+    get: {method: 'get'}
   })
 }
 
@@ -189,59 +189,41 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
     this.whole.$delete({id: $stateParams.id})
     $state.go("eventWelcome")
   }
-<<<<<<< HEAD
-  this.show = function(){
-    $state.go('eventShow')
-    console.log("fix me to redirect to show page event")
-=======
   this.event = function(){
     $state.go('userShow', {id: $stateParams.id})
->>>>>>> c7cf7a3253e544ea3a0115e80d78e68f208494cb
   }
 }
 
-
-function EventWelcomeControllerFunction(EventFactory, UserFactory) {
-  console.log("welcome");
+function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserIdFactory) {
+  wait()
+  function wait(){
+    if(typeof window.data !== "undefined"){
+      UserIdFactory.get({linkedinId: window.data.id}, function(user){
+        console.log(user);
+          if (user.linkedinId === window.data.id) {
+            console.log("user exists")
+            window.current_user = window.data
+          }else{
+            console.log("creating user");
+            UserCreateControllerFunction(UserFactory, $state)
+          }
+      })
+    }else{
+      setTimeout(function(){
+        wait()
+      }, 400)
+    }
+  }
 }
 
 function EventCheckinControllerFunction(EventFactory, $state, AttendanceFactory) {
   const self = this
   this.check = function(){
-    AttendanceFactory.create({
-      user: self.users.code,
+    attendance = AttendanceFactory.create({
+      user: window.current_user.firstName,
       event: self.event.code
     }, function(response){
-      console.log(response);
-    })
-    EventFactory.query(function(response){
-      response.forEach(function(e){
-        if(e.code == self.event.code){
-          this.event.id = e.id
-          $state.go("attendanceCreate", {id: this.event.id})
-  }
-})
-})
-}
-}
-function AttendanceCreateControllerFunction($stateParams, AttendanceFactory, $state){
-  // Attendance = new AttendanceFactory({user_id: $stateParams.obj.user_id, event_id: $stateParams.obj.event_id})
-  // Attendance.$save().then(attendance => {
-  //   console.log(attendance);
-  //   console.log($stateParams.obj.event_id);
-  //   $state.go('userShow', {id: $stateParams.obj.event_id})
-  // })
-}
-
-function EventControllerFunction(EventFactory, $state) {
-  const self = this
-  this.check = function(){
-    EventFactory.query(function(response){
-      response.forEach(function(e){
-        if(e.code == self.event.code){
-        $state.go('userShow', {id: e.id})
-        }
-      })
+      $state.go("attendanceCreate", {id: attendance.event_id})
     })
   }
 }
@@ -250,7 +232,6 @@ function eventNewControllerFunction(EventFactory, $state) {
   this.create = function(){
     Event = new EventFactory(this.event)
     Event.$save().then(event => {
-      console.log(event);
       $state.go('eventShow', {id: event.id})
     })
   }
@@ -272,13 +253,17 @@ function EventUpdateControllerFunction($stateParams, EventFactory, $state){
 }
 
 function UserCreateControllerFunction(UserFactory, $state){
-  this.hand = function(){
-    User = new UserFactory(this.user)
-    User.$save().then(user => {
-      console.log(user);
-      $state.go('eventWelcome')
-    })
-  }
+  User = new UserFactory({
+    name: window.data.firstName,
+    lastName: window.data.lastName,
+    photo_url: window.data.pictureUrls.values[0],
+    linkedin_url: window.data.publicProfileUrl,
+    linkedinId: window.data.id
+  })
+  User.$save().then(user => {
+    window.current_user = user
+    $state.go('eventWelcome')
+  })
 }
 
 function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $state){
@@ -294,14 +279,15 @@ function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $st
   }
 }
 
-// function onLinkedInLoad() {
-//   IN.Event.on(IN, "auth", function(){
-//     IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
-//     function onSuccess(data, UserFactory) {
-//       console.log(data);
-//     }
-//     function onError(error) {
-//       console.log(error);
-//     }
-//   })
-// }
+function onLinkedInLoad() {
+  IN.Event.on(IN, "auth", function(){
+    IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),public-profile-url,headline)?format=json").result(onSuccess).error(onError);
+    function onSuccess(data, UserFactory) {
+      window.data = data
+      EventWelcomeControllerFunction()
+    }
+    function onError(error) {
+      console.log(error);
+    }
+  })
+}
