@@ -33,8 +33,6 @@ angular
 .controller("EventWelcomeController", [
   "EventFactory",
   "UserFactory",
-  "$state",
-  "UserIdFactory",
   EventWelcomeControllerFunction
 ])
 .controller("UserCreateController", [
@@ -49,16 +47,14 @@ angular
   "$state",
   userShowControllerFunction
 ])
-.controller("EventCheckinController", [
-  "EventFactory",
-  "$state",
-  "AttendanceFactory",
-  EventCheckinControllerFunction
-])
 .factory("EventFactory", [
   "$resource",
   EventFactoryFunction
 ])
+// .factory("EventCodeFactory", [
+//   "$resource",
+//   EventCodeFactoryFunction
+// ])
 .factory("UserFactory", [
   "$resource",
   UserFactoryFunction
@@ -67,9 +63,17 @@ angular
   "$resource",
   AttendanceFactoryFunction
 ])
-.factory("UserIdFactory", [
-  '$resource',
-  UserIdFactoryFunction
+.controller("EventCheckinController", [
+  "EventFactory",
+  "$state",
+  "AttendanceFactory",
+  EventCheckinControllerFunction
+])
+.controller("AttendanceCreateController", [
+  "$stateParams",
+  "AttendanceFactory",
+  "$state",
+  AttendanceCreateControllerFunction
 ])
 
 // Routing
@@ -126,7 +130,7 @@ function Router($stateProvider){
   .state("attendanceCreate", {
     url: '/events/:id/users',
     templateUrl: 'js/ng-views/userShow.html',
-    controller: 'EventCheckinController',
+    controller: 'AttendanceCreateController',
     controllerAs: 'vm'
   })
 }
@@ -137,38 +141,33 @@ function AttendanceFactoryFunction($resource) {
     user: '@user',
     event: '@event'
   }, {
-    create: { method: "post" }
+    create: { method: "POST" }
   })
 }
 
 function EventFactoryFunction($resource) {
   return $resource("http://localhost:3000/events/:id", {}, {
-    update: {
-      method: "put"
-    },
-    checkin: {
-      method: "get"
-    }
+      update: {
+        method: "put"
+      },
+      checkin: {
+        method: "get"
+      }
   })
 }
+
+//
+// function EventCodeFactoryFunction($resource) {
+//   return $resource("http://localhost:3000/decode/:id", {id: '@id'}, {
+//     decode: {
+//       method: "get"
+//     }
+//   })
+// }
 
 function UserFactoryFunction($resource) {
   return $resource("http://localhost:3000/users/:id", {}, {
-    create: {
-      method: "post"
-    },
-    get: {
-      method: "get"
-    }
-  })
-}
-
-function UserIdFactoryFunction($resource){
-  return $resource("http://localhost:3000/users/id/:linkedinId",
-  {
-    linkedinId: '@linkedinId'
-  }, {
-    get: {method: 'get'}
+    create: { method: "POST" }
   })
 }
 
@@ -193,45 +192,47 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
   }
 }
 
-function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserIdFactory) {
-  wait()
-  function wait(){
-    if(typeof window.data !== "undefined"){
-      UserIdFactory.get({linkedinId: window.data.id}, function(user){
-        console.log(user);
-          if (user.linkedinId === window.data.id) {
-            console.log("user exists")
-          }else{
-            console.log("creating user");
-            UserCreateControllerFunction(UserFactory, $state)
-          }
-      })
-    }else{
-      setTimeout(function(){
-        wait()
-      }, 400)
-    }
-  }
+
+
+
+function EventWelcomeControllerFunction(EventFactory, UserFactory) {
+  console.log("welcome");
 }
 
 function EventCheckinControllerFunction(EventFactory, $state, AttendanceFactory) {
   const self = this
   this.check = function(){
-    attendance = AttendanceFactory.create({
+    AttendanceFactory.create({
       user: self.users.code,
       event: self.event.code
     }, function(response){
       console.log(response);
     })
-    EventFactory.get(attendance)
-    $state.go("attendanceCreate", {id: attendance.event_id})
+    EventFactory.query(function(response){
+      response.forEach(function(e){
+        if(e.code == self.event.code){
+          this.event.id = e.id
+          $state.go("attendanceCreate", {id: this.event.id})
   }
+})
+})
 }
+}
+function AttendanceCreateControllerFunction($stateParams, AttendanceFactory, $state){
+  // Attendance = new AttendanceFactory({user_id: $stateParams.obj.user_id, event_id: $stateParams.obj.event_id})
+  // Attendance.$save().then(attendance => {
+  //   console.log(attendance);
+  //   console.log($stateParams.obj.event_id);
+  //   $state.go('userShow', {id: $stateParams.obj.event_id})
+  // })
+}
+
 
 function eventNewControllerFunction(EventFactory, $state) {
   this.create = function(){
     Event = new EventFactory(this.event)
     Event.$save().then(event => {
+      console.log(event);
       $state.go('eventShow', {id: event.id})
     })
   }
@@ -253,18 +254,14 @@ function EventUpdateControllerFunction($stateParams, EventFactory, $state){
 }
 
 function UserCreateControllerFunction(UserFactory, $state){
-  User = new UserFactory({
-    name: window.data.firstName,
-    lastName: window.data.lastName,
-    photo_url: window.data.pictureUrls.values[0],
-    linkedin_url: window.data.publicProfileUrl,
-    linkedinId: window.data.id
-  })
-  User.$save().then(user => {
-    $state.go('eventWelcome')
-  })
+  this.hand = function(){
+    User = new UserFactory(this.user)
+    User.$save().then(user => {
+      console.log(user);
+      $state.go('eventWelcome')
+    })
+  }
 }
-
 function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $state){
   this.whole = EventFactory.get({id: $stateParams.id}, function(response){
     this.title = response.event.title
@@ -277,16 +274,31 @@ function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $st
     $state.go("eventWelcome")
   }
 }
+// function userCreate(UserFactory){
+//   console.log("HIII");
+//   // create users
+//
+//   let user = window.data
+//   console.log(user);
+//
+//   function createUser(user) {
+//     UserFactory.create({
+//       name: user.firstName
+//     }).$promise.then( () => {
+//       console.log(window.data);
+//     })
+//   }
+//
+// }
 
-function onLinkedInLoad() {
-  IN.Event.on(IN, "auth", function(){
-    IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),public-profile-url,headline)?format=json").result(onSuccess).error(onError);
-    function onSuccess(data, UserFactory) {
-      window.data = data
-      EventWelcomeControllerFunction()
-    }
-    function onError(error) {
-      console.log(error);
-    }
-  })
-}
+// function onLinkedInLoad() {
+//   IN.Event.on(IN, "auth", function(){
+//     IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),headline)?format=json").result(onSuccess).error(onError);
+//     function onSuccess(data, UserFactory) {
+//       console.log(data);
+//     }
+//     function onError(error) {
+//       console.log(error);
+//     }
+//   })
+// }
