@@ -72,12 +72,7 @@
 
 
         // for (i = 0; i < users.length; i++) {
-        //   if (users[i].linkedinId === window.data.id) {
-        //     console.log("user exists")
-        //   }else{
-        //     console.log("creating user");
-        //     UserCreateControllerFunction(UserFactory, $state)
-        //   }
+
         // }
       }
       // users.forEach(function(user){
@@ -96,7 +91,7 @@
 // UserFactory.get({linkedinId: window.data.id}, function(user){
 //   console.log(user);
 // })
-// 
+//
 // Latoya = User.create!({name: 'Latoya Watson', photo_url: 'https://media.licdn.com/media/AAEAAQAAAAAAAAkNAAAAJDUxMWZkMDNiLWQ0YTctNDJkMC04NjljLWMyYTk3YjlhMGE0Mw.jpg', linkedin_url: 'https://www.linkedin.com/in/watsonlm'})
 // Liza = User.create!({name: 'Liza Floyd', photo_url: 'https://media.licdn.com/media/AAEAAQAAAAAAAAjpAAAAJGRiMmViYjcwLWMyODYtNGIzZS04MDEyLTIzYWI2OTFlYzJjMA.jpg', linkedin_url: 'https://www.linkedin.com/in/lizafloyd'})
 // Andres = User.create!({name: 'Andres Espinoza', photo_url: 'https://media.licdn.com/media/AAEAAQAAAAAAAAbEAAAAJDFmYTViNTA2LTQ4ODMtNGEzYS05N2Q1LTJlOTZjN2NjMWY5Yg.jpg', linkedin_url: 'https://www.linkedin.com/in/andres-espinoza'})
