@@ -11,16 +11,23 @@ h1 {
   font-family: 'Satisfy', cursive;
   color: #957FEF;
   font-size: 7em;
+  text-shadow: 4px 4px 2px rgba(150, 150, 150, 0.79);
 }
 
 h2 {
   font-family: 'Satisfy', cursive;
   color: #957FEF;
-  font-size: 2em
+  font-size: 2.5em
 }
 
 span {
   font-family: 'Source Code Pro', monospace
+}
+
+h2 span {
+  color: #F7F7F7;
+  font-family: 'Satisfy', cursive;
+  text-shadow: 4px 4px 2px rgba(150, 150, 150, 0.79);
 }
 
 .container {
@@ -55,7 +62,8 @@ span {
   color: #fff;
 }
 
-.event-flex {
+.event-flex,
+.flex {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -74,7 +82,8 @@ span {
   order: 1;
 }
 
-.event-body {
+.event-body,
+.listEvents {
   background: #EEEEEE;
   text-align: center;
   font-family: 'Source Code Pro', monospace;
@@ -125,7 +134,8 @@ span {
     border-radius: 4px;
 }
 
-.form-style h2 {
+.form-style h2,
+ .username {
     background: #957FEF;
     padding: 1em 0;
     font-weight: 300;
@@ -134,6 +144,10 @@ span {
     margin: -16px -16px 16px -16px;
     font-family: 'Source Code Pro', monospace;
     font-size: 1.5em;
+}
+
+.username {
+  font-size: 1em;
 }
 
 .form-style input[placeholder="Title"],
@@ -177,6 +191,7 @@ form button {
 }
 .userButton {
   font-family: 'Source Code Pro', monospace;
+  cursor: pointer;
   letter-spacing: 0.1em;
   font-size: 1em;
   margin: 1em;
@@ -195,31 +210,30 @@ form button:hover {
   background: #957FEF;
   cursor: pointer;
 }
-.usercontainer {
-  display:flex;
-  background-color: #957FEF;
-  font-family: 'Raleway', sans-serif;
-  margin: 10px;
-  padding: 1em;
-  text-align: center;
-  border-radius: 15px;
-  -webkit-box-shadow: 0 8px 16px -6px black;
-     -moz-box-shadow: 0 8px 16px -6px black;
-          box-shadow: 0 8px 16px -6px black;
-  justify-content: space-between;
-  font-size: 1.3em;
-  align-items: center;
-  color: white;
-}
-.usercontainer a {
-  text-decoration: none;
-  color:#0274B3;
-}
+
 .userboss {
-  margin:2em;
-  margin-bottom: 4em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;;
+  align-items: center;
+  padding: 2em;
+  margin-bottom: 1.5%;
+}
+
+.usercontainer {
+  width: 40%;
+  margin: 10px auto;
+  padding: 16px;
+  background: #F7F7F7;
+  border-radius: 4px;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 1.5em;
+  -webkit-box-shadow: 0 8px 16px -6px black;
+  -moz-box-shadow: 0 8px 16px -6px black;
+  box-shadow: 0 8px 16px -6px black;
 }
 
 img {
-  width:100px;
+  width:25%;
+  height: auto;
 }

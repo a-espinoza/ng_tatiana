@@ -1,9 +1,9 @@
-<h2>Your Fellow Guests</h2>
+<h2>Your Fellow Guests at <span>{{vm.whole.event.title}}</span></h2>
 <div class="userboss">
 <div class="usercontainer" data-ng-repeat="user in vm.whole.attendees">
   <div class="username">{{user.name}}</div>
-  <div class="userurl"><a class="abutton" href="{{user.linkedin_url}}">Add on LinkedIn</a></div>
   <div class="userphoto"><img src="{{user.photo_url}}" alt="Profile Photo"></div>
+  <div class="userurl"><a href="{{user.linkedin_url}}">Connect on Linkedin</a></div>
 </div>
 </div>
 
