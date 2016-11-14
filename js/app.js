@@ -201,6 +201,7 @@ function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserI
         console.log(user);
           if (user.linkedinId === window.data.id) {
             console.log("user exists")
+            window.current_user = window.data
           }else{
             console.log("creating user");
             UserCreateControllerFunction(UserFactory, $state)
@@ -218,7 +219,7 @@ function EventCheckinControllerFunction(EventFactory, $state, AttendanceFactory)
   const self = this
   this.check = function(){
     attendance = AttendanceFactory.create({
-      user: self.users.code,
+      user: window.current_user.firstName,
       event: self.event.code
     }, function(response){
       $state.go("attendanceCreate", {id: attendance.event_id})
@@ -259,6 +260,7 @@ function UserCreateControllerFunction(UserFactory, $state){
     linkedinId: window.data.id
   })
   User.$save().then(user => {
+    window.current_user = user
     $state.go('eventWelcome')
   })
 }

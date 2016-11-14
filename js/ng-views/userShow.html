@@ -1,7 +1,7 @@
 <h2>Your Fellow Guests</h2>
 <div class="userboss">
 <div class="usercontainer" data-ng-repeat="user in vm.whole.attendees">
-  <div class="username">{{user.name}}</div>
+  <div class="username">{{user.name}} {{user.lastName}}</div>
   <div class="userurl"><a class="abutton" href="{{user.linkedin_url}}">Add on LinkedIn</a></div>
   <div class="userphoto"><img src="{{user.photo_url}}" alt="Profile Photo"></div>
 </div>
