@@ -221,10 +221,8 @@ function EventCheckinControllerFunction(EventFactory, $state, AttendanceFactory)
       user: self.users.code,
       event: self.event.code
     }, function(response){
-      console.log(response);
+      $state.go("attendanceCreate", {id: attendance.event_id})
     })
-    EventFactory.get(attendance)
-    $state.go("attendanceCreate", {id: attendance.event_id})
   }
 }
 
