@@ -1,0 +1,11 @@
+<h1>User's Page</h1>
+<h2>Add new user to event</h2>
+
+<form name="userForm" method="post">
+  <input placeholder="Name" data-ng-model="vm.user.name" />
+  <input placeholder="Photo" data-ng-model="vm.user.photo_url" />
+  <input placeholder="LinkeIn" data-ng-model="vm.user.linkedin_url" />
+
+  <!-- <input placeholder="LinkeIn" data-ng-model="vm.user.code" /> -->
+  <button type="button" data-ng-click="vm.hand()">Create</button>
+</form>
