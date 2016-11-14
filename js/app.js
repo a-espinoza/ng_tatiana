@@ -163,12 +163,13 @@ function UserFactoryFunction($resource) {
   })
 }
 
+// AM: What's the purpose of this factory?
 function UserIdFactoryFunction($resource){
   return $resource("http://localhost:3000/users/id/:linkedinId",
   {
     linkedinId: '@linkedinId'
   }, {
-    get: {method: 'get'}
+    get: {method: 'get'}  // AM: Why did you need to include this part?
   })
 }
 
@@ -187,7 +188,7 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
   }
   this.destroy = function(){
     this.whole.$delete({id: $stateParams.id})
-    $state.go("eventWelcome")
+    $state.go("eventWelcome") // AM: You might want to wrap this in a callback/promise to avoid any issues resulting from deleting asynchronously.
   }
 }
 

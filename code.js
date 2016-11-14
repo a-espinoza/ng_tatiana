@@ -1,3 +1,5 @@
+// AM: If you're not going to use this file, I would suggest removing it from your final app.
+
 // this.create = function() {
 //   console.log(this.event);
 //   $.ajax({
