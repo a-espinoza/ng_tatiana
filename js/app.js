@@ -5,6 +5,7 @@ angular
 ])
 .config([
   "$stateProvider",
+  "$locationProvider",
   Router
 ])
 .controller("eventIndexController", [
@@ -38,6 +39,14 @@ angular
   "KeyFactory",
   EventWelcomeControllerFunction
 ])
+.controller("NewSignInController", [
+  "KeyFactory",
+  "$window",
+  "$http",
+  "$stateParams",
+  "$state",
+  NewSignInControllerFunction
+])
 .controller("UserCreateController", [
   "UserFactory",
   "$state",
@@ -55,6 +64,11 @@ angular
   "$state",
   "AttendanceFactory",
   EventCheckinControllerFunction
+])
+.controller("AuthController", [
+  "$stateParams",
+  "$http",
+  AuthController
 ])
 .factory("EventFactory", [
   "$resource",
@@ -78,7 +92,8 @@ angular
 ])
 
 // Routing
-function Router($stateProvider){
+function Router($stateProvider, $locationProvider){
+  $locationProvider.html5Mode(true)
   $stateProvider
   .state("eventIndex", {
     url: "/events",
@@ -105,7 +120,7 @@ function Router($stateProvider){
     controllerAs: "vm"
   })
   .state("eventWelcome", {
-    url: "/",
+    url: "/welcome",
     templateUrl: "js/ng-views/welcome.html",
     controller: "EventWelcomeController",
     controllerAs: "vm"
@@ -132,6 +147,18 @@ function Router($stateProvider){
     url: '/events/:id/users',
     templateUrl: 'js/ng-views/userShow.html',
     controller: 'EventCheckinController',
+    controllerAs: 'vm'
+  })
+  .state("authRedirect", {
+    url: '/auth',
+    templateUrl: 'js/ng-views/newSignIn.html',
+    controller: 'AuthController',
+    controllerAs: 'vm'
+  })
+  .state("NewSignIn", {
+    url: '/',
+    templateUrl: 'js/ng-views/newSignIn.html',
+    controller: 'NewSignInController',
     controllerAs: 'vm'
   })
 }
@@ -178,12 +205,46 @@ function UserIdFactoryFunction($resource){
 }
 
 function KeyFactoryFunction($resource){
-  return $resource("http://localhost:3000",
+  return $resource("http://localhost:3000/",
   {
-    key: '@key'
+    url: '@url'
   }, {
-    get: {method: 'get'}
+    get: {method: 'get'},
+    post: {method: 'post'}
   })
+}
+
+function AuthController ($stateParams, $http){
+  let code = $stateParams.code
+  console.log(code);
+}
+
+function NewSignInControllerFunction(KeyFactory, $window, $http, $stateParams, $state){
+  if ($window.location.search){
+    let code = $window.location.search.split("=")[1];
+    console.log(code);
+    // KeyFactory.post({code: $window.location.search.split("=")[1], url: $window.location.search})
+    $http({
+      method: "post",
+      url: `http://localhost:3000/code/?code=${code}`
+    }).then(response => {
+      console.log(response.data);
+    })
+    // .then(function(response){
+    //   console.log(response.data.response);
+    //   $http({
+    //     method:"get",
+        // url: "https://api.linkedin.com/v1/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),public-profile-url,headline)?oauth2_access_token="+response.data.response.access_token + "&format=json"
+    //   }).then(function(response){
+    //     console.log(response);
+    //   })
+    // })
+  } else {
+    KeyFactory.get({}, response => {
+        console.log(response.url);
+        $window.location.href = response.url
+    })
+  }
 }
 
 function eventIndexControllerFunction(EventFactory, UserFactory){
@@ -208,9 +269,7 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
 }
 
 function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserIdFactory, KeyFactory) {
-  key = KeyFactory.get({}, response => {
-    console.log(response);
-  })
+
   wait()
   function wait(){
     if(typeof window.data !== "undefined"){
