@@ -35,6 +35,7 @@ angular
   "UserFactory",
   "$state",
   "UserIdFactory",
+  "KeyFactory",
   EventWelcomeControllerFunction
 ])
 .controller("UserCreateController", [
@@ -70,6 +71,10 @@ angular
 .factory("UserIdFactory", [
   '$resource',
   UserIdFactoryFunction
+])
+.factory("KeyFactory", [
+  '$resource',
+  KeyFactoryFunction
 ])
 
 // Routing
@@ -172,6 +177,15 @@ function UserIdFactoryFunction($resource){
   })
 }
 
+function KeyFactoryFunction($resource){
+  return $resource("http://localhost:3000",
+  {
+    key: '@key'
+  }, {
+    get: {method: 'get'}
+  })
+}
+
 function eventIndexControllerFunction(EventFactory, UserFactory){
   this.events = EventFactory.query()
 }
@@ -193,19 +207,22 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
   }
 }
 
-function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserIdFactory) {
+function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserIdFactory, KeyFactory) {
+  key = KeyFactory.get({}, response => {
+    console.log(response);
+  })
   wait()
   function wait(){
     if(typeof window.data !== "undefined"){
       UserIdFactory.get({linkedinId: window.data.id}, function(user){
         console.log(user);
-          if (user.linkedinId === window.data.id) {
-            console.log("user exists")
-            window.current_user = window.data
-          }else{
-            console.log("creating user");
-            UserCreateControllerFunction(UserFactory, $state)
-          }
+        if (user.linkedinId === window.data.id) {
+          console.log("user exists")
+          window.current_user = window.data
+        }else{
+          console.log("creating user");
+          UserCreateControllerFunction(UserFactory, $state)
+        }
       })
     }else{
       setTimeout(function(){
