@@ -29,13 +29,27 @@ span {
   /*height: 30em;*/
   flex-wrap: wrap;
   justify-content: center;
+  width:auto;
 }
-
 .container a {
   text-decoration: none;
   font-size: 2em;
   cursor: pointer;
   font-family: 'Satisfy', cursive;
+}
+.containerFixed {
+  display: flex;
+  align-items: center;
+  /*height: 30em;*/
+  flex-wrap: wrap;
+  justify-content: center;
+  width:fixed;
+}
+.containerFixed a {
+  text-decoration: none;
+  font-size: 2em;
+  cursor: pointer;
+  font-family: 'Prociono', serif;
 }
 
 .createEvent,
@@ -49,11 +63,44 @@ span {
 	   -moz-box-shadow: 0 8px 16px -6px black;
 	        box-shadow: 0 8px 16px -6px black;
 }
-
 .createEvent:hover,
 .checkinEvent:hover {
   color: #fff;
 }
+.homeEvent {
+  font-size: 16px;
+  flex-wrap: wrap;
+  background-color: #957FEF;
+  margin: 1em;
+  padding: 3em;
+  text-align: center;
+  border-radius: 15px;
+  -webkit-box-shadow: 0 8px 16px -6px black;
+	   -moz-box-shadow: 0 8px 16px -6px black;
+	        box-shadow: 0 8px 16px -6px black;
+}
+
+.homeEvent:hover {
+  color: #fff;
+}
+.customHomeEvent {
+  font-size: 16px;
+  font-family: 'Satisfy', cursive;
+  flex-wrap: wrap;
+  background-color: #957FEF;
+  margin: 1em;
+  padding: 3em;
+  text-align: center;
+  border-radius: 15px;
+  -webkit-box-shadow: 0 8px 16px -6px black;
+	   -moz-box-shadow: 0 8px 16px -6px black;
+	        box-shadow: 0 8px 16px -6px black;
+}
+
+.customHomeEvent:hover {
+  color: #fff;
+}
+
 
 .event-flex {
   display: flex;
