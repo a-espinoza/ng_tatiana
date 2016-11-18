@@ -23,11 +23,9 @@ span {
   font-family: 'Source Code Pro', monospace
 }
 
-.container,
-.userboss {
+.container {
   display: flex;
   align-items: center;
-  /*height: 30em;*/
   flex-wrap: wrap;
   justify-content: center;
   width:auto;
@@ -39,6 +37,14 @@ span {
   padding: 16px;
   background: #F7F7F7;
   border-radius: 4px;
+}
+
+.userboss {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: auto;
 }
 
 .container a {
@@ -237,6 +243,7 @@ form button {
   letter-spacing: 0.1em;
   font-size: 1em;
   margin: 1em;
+  margin-top: 2em;
   border: 1px solid #000;
   border-radius: 3px;
   background: #fff;
@@ -252,7 +259,7 @@ form button:hover {
   background: #957FEF;
   cursor: pointer;
 }
-.usercontainer {
+/*.usercontainer {
   display:flex;
   background-color: #957FEF;
   font-family: 'Raleway', sans-serif;
@@ -275,7 +282,7 @@ form button:hover {
 .userboss {
   margin:2em;
   margin-bottom: 4em;
-}
+}*/
 
 img {
   width:100px;
