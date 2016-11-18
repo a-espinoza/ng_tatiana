@@ -228,139 +228,140 @@ function KeyFactoryFunction($resource){
 }
 
 function AuthController ($stateParams, $http){
-  let code = $stateParams.code
-  console.log(code);
+ let code = $stateParams.code
+ console.log(code);
 }
 
 function Home (){
-  console.log("home");
+ console.log("home");
 }
 
 function NewSignInControllerFunction(KeyFactory, $window, $http, $stateParams, $state){
-  console.log("hitting controller");
-  if ($window.location.search){
-    console.log("if loop");
-    let code = $window.location.search.split("=")[1];
-    console.log(code);
-    $http({
-      method: "post",
-      url: `https://salty-fjord-31987.herokuapp.com/code/?code=${code}`
-    }).then(response => {
-      console.log(response.data);
-      window.data = response.data
-      $state.go("eventWelcome")
-    })
-  } else {
-    KeyFactory.get({}, response => {
-        console.log(response.url);
-        $window.location.href = response.url
-    })
-  }
+ console.log("hitting controller");
+ if ($window.location.search){
+   console.log("if loop");
+   let code = $window.location.search.split("=")[1];
+   console.log(code);
+   $http({
+     method: "post",
+     url: `http://localhost:3000/code/?code=${code}`
+   }).then(response => {
+     console.log(response.data);
+     window.data = response.data
+     $state.go("eventWelcome")
+   })
+ } else {
+   KeyFactory.get({}, response => {
+       console.log(response.url);
+       $window.location.href = response.url
+   })
+ }
 }
 
 function eventIndexControllerFunction(EventFactory, UserFactory){
-  this.events = EventFactory.query()
+ this.events = EventFactory.query()
 }
 
 function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $state) {
-  this.whole = EventFactory.get({id: $stateParams.id}, function(response){
-    this.title = response.event.title
-    this.attendances = response.event.attendances
-  })
-  this.update = function(){
-    $state.go('eventUpdate', {id: $stateParams.id})
-    console.log("working")
-  }
-  this.destroy = function(){
-    this.whole.$delete({id: $stateParams.id})
-    $state.go("eventWelcome")
-  }
+ this.whole = EventFactory.get({id: $stateParams.id}, function(response){
+   this.title = response.event.title
+   this.attendances = response.event.attendances
+ })
+ this.update = function(){
+   $state.go('eventUpdate', {id: $stateParams.id})
+ }
+ this.destroy = function(){
+   this.whole.$delete({id: $stateParams.id})
+   $state.go("eventWelcome")
+ }
+ this.event = function(){
+   $state.go('userShow', {id: $stateParams.id})
+ }
 }
 
 function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserIdFactory, KeyFactory) {
-  console.log(window.data);
-  wait()
-  function wait(){
-    console.log("wait");
-    if(typeof window.data !== "undefined"){
-      UserIdFactory.get({linkedinId: window.data.id}, function(user){
-        console.log(user);
-        if (user.linkedinId === window.data.id) {
-          console.log("user exists")
-          window.current_user = window.data
-        }else{
-          console.log("creating user");
-          UserCreateControllerFunction(UserFactory, $state)
-        }
-      })
-    }else{
-      setTimeout(function(){
-        wait()
-      }, 400)
-    }
-  }
+ console.log(window.data);
+ wait()
+ function wait(){
+   console.log("wait");
+   if(typeof window.data !== "undefined"){
+     UserIdFactory.get({linkedinId: window.data.id}, function(user){
+       console.log(user);
+       if (user.linkedinId === window.data.id) {
+         console.log("user exists")
+         window.current_user = window.data
+       }else{
+         console.log("creating user");
+         UserCreateControllerFunction(UserFactory, $state)
+       }
+     })
+   }else{
+     setTimeout(function(){
+       wait()
+     }, 400)
+   }
+ }
 }
 
-function EventCheckinControllerFunction(EventFactory, $state) {
-  const self = this
-  this.check = function(){
-    attendance = AttendanceFactory.create({
-      user: window.current_user.firstName,
-      event: self.event.code
-    }, function(response){
-      $state.go("attendanceCreate", {id: attendance.event_id})
-    })
-  }
+function EventCheckinControllerFunction(EventFactory, $state, AttendanceFactory) {
+ const self = this
+ this.check = function(){
+   attendance = AttendanceFactory.create({
+     user: window.current_user.firstName,
+     event: self.event.code
+   }, function(response){
+     $state.go("attendanceCreate", {id: attendance.event_id})
+   })
+ }
 }
 
 function eventNewControllerFunction(EventFactory, $state) {
-  this.create = function(){
-    Event = new EventFactory(this.event)
-    Event.$save().then(event => {
-      $state.go('eventShow', {id: event.id})
-    })
-  }
+ this.create = function(){
+   Event = new EventFactory(this.event)
+   Event.$save().then(event => {
+     $state.go('eventShow', {id: event.id})
+   })
+ }
 }
 
 function EventUpdateControllerFunction($stateParams, EventFactory, $state){
-  const self = this
-  //sets placeholder values
-  this.event = EventFactory.get({id: $stateParams.id}, function(response){
-    self.event = response.event
-  })
-  //updates after second click
-  this.update = function(){
-    EventFactory.update({id: $stateParams.id}, self.event).$promise.then(function(response){
-      self.event = response.event
-      $state.go("eventShow", {id: $stateParams.id})
-    })
-  }
+ const self = this
+ //sets placeholder values
+ this.event = EventFactory.get({id: $stateParams.id}, function(response){
+   self.event = response.event
+ })
+ //updates after second click
+ this.update = function(){
+   EventFactory.update({id: $stateParams.id}, self.event).$promise.then(function(response){
+     self.event = response.event
+     $state.go("eventShow", {id: $stateParams.id})
+   })
+ }
 }
 
 function UserCreateControllerFunction(UserFactory, $state){
-  User = new UserFactory({
-    name: window.data.firstName,
-    lastName: window.data.lastName,
-    photo_url: window.data.pictureUrls.values[0],
-    linkedin_url: window.data.publicProfileUrl,
-    linkedinId: window.data.id
-  })
-  User.$save().then(user => {
-    window.current_user = user
-    $state.go('eventWelcome')
-  })
+ User = new UserFactory({
+   name: window.data.firstName,
+   lastName: window.data.lastName,
+   photo_url: window.data.pictureUrls.values[0],
+   linkedin_url: window.data.publicProfileUrl,
+   linkedinId: window.data.id
+ })
+ User.$save().then(user => {
+   window.current_user = user
+   $state.go('eventWelcome')
+ })
 }
 
 function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $state){
-  console.log("user show");
-  this.whole = EventFactory.get({id: $stateParams.id}, function(response){
-    this.title = response.event.title
-    this.attendances = response.event.attendances
-  })
-  this.event = function(){
-    $state.go("eventShow", {id: $stateParams.id})
-  }
-  this.home = function(){
-    $state.go("eventWelcome")
-  }
+ this.whole = EventFactory.get({id: $stateParams.id}, function(response){
+   this.title = response.event.title
+   this.attendances = response.event.attendances
+ })
+ this.event = function(){
+   $state.go("eventShow", {id: $stateParams.id})
+ }
+ this.home = function(){
+   $state.go("eventWelcome")
+ }
 }
