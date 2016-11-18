@@ -70,6 +70,9 @@ angular
   "$http",
   AuthController
 ])
+.controller("Home", [
+  Home
+])
 .factory("EventFactory", [
   "$resource",
   EventFactoryFunction
@@ -155,11 +158,21 @@ function Router($stateProvider, $locationProvider){
     controller: 'AuthController',
     controllerAs: 'vm'
   })
-  .state("NewSignIn", {
+  .state("Home", {
     url: '/',
     templateUrl: 'js/ng-views/newSignIn.html',
+    controller: 'Home',
+    controllerAs: 'vm'
+  })
+  .state("NewSignIn", {
+    url: '/signIn',
+    templateUrl: 'js/ng-views/wait.html',
     controller: 'NewSignInController',
     controllerAs: 'vm'
+  })
+  .state("Wait", {
+    url: '/loading',
+    templateUrl: 'js/ng-views/wait.html'
   })
 }
 
@@ -219,8 +232,14 @@ function AuthController ($stateParams, $http){
   console.log(code);
 }
 
+function Home (){
+  console.log("home");
+}
+
 function NewSignInControllerFunction(KeyFactory, $window, $http, $stateParams, $state){
+  console.log("hitting controller");
   if ($window.location.search){
+    console.log("if loop");
     let code = $window.location.search.split("=")[1];
     console.log(code);
     // KeyFactory.post({code: $window.location.search.split("=")[1], url: $window.location.search})
@@ -229,6 +248,8 @@ function NewSignInControllerFunction(KeyFactory, $window, $http, $stateParams, $
       url: `http://localhost:3000/code/?code=${code}`
     }).then(response => {
       console.log(response.data);
+      window.data = response.data
+      $state.go("eventWelcome")
     })
     // .then(function(response){
     //   console.log(response.data.response);
@@ -269,9 +290,10 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
 }
 
 function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserIdFactory, KeyFactory) {
-
+  console.log(window.data);
   wait()
   function wait(){
+    console.log("wait");
     if(typeof window.data !== "undefined"){
       UserIdFactory.get({linkedinId: window.data.id}, function(user){
         console.log(user);
@@ -354,15 +376,15 @@ function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $st
   }
 }
 
-function onLinkedInLoad() {
-  IN.Event.on(IN, "auth", function(){
-    IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),public-profile-url,headline)?format=json").result(onSuccess).error(onError);
-    function onSuccess(data, UserFactory) {
-      window.data = data
-      EventWelcomeControllerFunction()
-    }
-    function onError(error) {
-      console.log(error);
-    }
-  })
-}
+// function onLinkedInLoad() {
+//   IN.Event.on(IN, "auth", function(){
+//     IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),public-profile-url,headline)?format=json").result(onSuccess).error(onError);
+//     function onSuccess(data, UserFactory) {
+//       window.data = data
+//       EventWelcomeControllerFunction()
+//     }
+//     function onError(error) {
+//       console.log(error);
+//     }
+//   })
+// }
