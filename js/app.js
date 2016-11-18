@@ -177,7 +177,7 @@ function Router($stateProvider, $locationProvider){
 }
 
 function AttendanceFactoryFunction($resource) {
-  return $resource("https://git.heroku.com/salty-fjord-31987.git/attendances/checkin/:user/:event",
+  return $resource("https://salty-fjord-31987.herokuapp.com/attendances/checkin/:user/:event",
   {
     user: '@user',
     event: '@event'
@@ -187,7 +187,7 @@ function AttendanceFactoryFunction($resource) {
 }
 //fix urls to link to heroku
 function EventFactoryFunction($resource) {
-  return $resource("https://git.heroku.com/salty-fjord-31987.git/events/:id", {}, {
+  return $resource("https://salty-fjord-31987.herokuapp.com/events/:id", {}, {
     update: {
       method: "put"
     },
@@ -198,7 +198,7 @@ function EventFactoryFunction($resource) {
 }
 
 function UserFactoryFunction($resource) {
-  return $resource("https://git.heroku.com/salty-fjord-31987.git/users/:id", {}, {
+  return $resource("https://salty-fjord-31987.herokuapp.com/users/:id", {}, {
     create: {
       method: "post"
     },
@@ -209,7 +209,7 @@ function UserFactoryFunction($resource) {
 }
 
 function UserIdFactoryFunction($resource){
-  return $resource("https://git.heroku.com/salty-fjord-31987.git/users/id/:linkedinId",
+  return $resource("https://salty-fjord-31987.herokuapp.com/users/id/:linkedinId",
   {
     linkedinId: '@linkedinId'
   }, {
@@ -218,7 +218,7 @@ function UserIdFactoryFunction($resource){
 }
 
 function KeyFactoryFunction($resource){
-  return $resource("https://git.heroku.com/salty-fjord-31987.git/",
+  return $resource("https://salty-fjord-31987.herokuapp.com/",
   {
     url: '@url'
   }, {
@@ -244,7 +244,7 @@ function NewSignInControllerFunction(KeyFactory, $window, $http, $stateParams, $
     console.log(code);
     $http({
       method: "post",
-      url: `https://git.heroku.com/salty-fjord-31987.git/code/?code=${code}`
+      url: `https://salty-fjord-31987.herokuapp.com/code/?code=${code}`
     }).then(response => {
       console.log(response.data);
       window.data = response.data
