@@ -220,7 +220,7 @@ function UserIdFactoryFunction($resource){
 function KeyFactoryFunction($resource){
   return $resource("https://salty-fjord-31987.herokuapp.com/",
   {
-    url: 'url'
+    url: '@url'
   }, {
     get: {method: 'get'},
     post: {method: 'post'}
