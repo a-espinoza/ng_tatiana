@@ -185,7 +185,7 @@ function AttendanceFactoryFunction($resource) {
     create: { method: "post" }
   })
 }
-
+//fix urls to link to heroku
 function EventFactoryFunction($resource) {
   return $resource("http://localhost:3000/events/:id", {}, {
     update: {
@@ -269,6 +269,7 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
   })
   this.update = function(){
     $state.go('eventUpdate', {id: $stateParams.id})
+    console.log("working")
   }
   this.destroy = function(){
     this.whole.$delete({id: $stateParams.id})
