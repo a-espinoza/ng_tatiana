@@ -242,7 +242,6 @@ function NewSignInControllerFunction(KeyFactory, $window, $http, $stateParams, $
     console.log("if loop");
     let code = $window.location.search.split("=")[1];
     console.log(code);
-    // KeyFactory.post({code: $window.location.search.split("=")[1], url: $window.location.search})
     $http({
       method: "post",
       url: `http://localhost:3000/code/?code=${code}`
@@ -251,15 +250,6 @@ function NewSignInControllerFunction(KeyFactory, $window, $http, $stateParams, $
       window.data = response.data
       $state.go("eventWelcome")
     })
-    // .then(function(response){
-    //   console.log(response.data.response);
-    //   $http({
-    //     method:"get",
-        // url: "https://api.linkedin.com/v1/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),public-profile-url,headline)?oauth2_access_token="+response.data.response.access_token + "&format=json"
-    //   }).then(function(response){
-    //     console.log(response);
-    //   })
-    // })
   } else {
     KeyFactory.get({}, response => {
         console.log(response.url);
@@ -375,16 +365,3 @@ function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $st
     $state.go("eventWelcome")
   }
 }
-
-// function onLinkedInLoad() {
-//   IN.Event.on(IN, "auth", function(){
-//     IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),public-profile-url,headline)?format=json").result(onSuccess).error(onError);
-//     function onSuccess(data, UserFactory) {
-//       window.data = data
-//       EventWelcomeControllerFunction()
-//     }
-//     function onError(error) {
-//       console.log(error);
-//     }
-//   })
-// }
