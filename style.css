@@ -23,7 +23,8 @@ span {
   font-family: 'Source Code Pro', monospace
 }
 
-.container {
+.container,
+.userboss {
   display: flex;
   align-items: center;
   /*height: 30em;*/
@@ -31,6 +32,15 @@ span {
   justify-content: center;
   width:auto;
 }
+
+.usercontainer {
+  max-width: 400px;
+  margin: 10px auto;
+  padding: 16px;
+  background: #F7F7F7;
+  border-radius: 4px;
+}
+
 .container a {
   text-decoration: none;
   font-size: 2em;
@@ -138,7 +148,7 @@ span {
   border: 1px solid #000;
   border-radius: 3px;
   background: #fff;
-  width: 10%;
+  width: 12%;
   padding: 1%;
   color: #000;
   box-sizing: border-box;
