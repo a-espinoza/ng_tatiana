@@ -5,6 +5,7 @@ angular
 ])
 .config([
   "$stateProvider",
+  "$locationProvider",
   Router
 ])
 .controller("eventIndexController", [
@@ -35,7 +36,16 @@ angular
   "UserFactory",
   "$state",
   "UserIdFactory",
+  "KeyFactory",
   EventWelcomeControllerFunction
+])
+.controller("NewSignInController", [
+  "KeyFactory",
+  "$window",
+  "$http",
+  "$stateParams",
+  "$state",
+  NewSignInControllerFunction
 ])
 .controller("UserCreateController", [
   "UserFactory",
@@ -55,6 +65,14 @@ angular
   "AttendanceFactory",
   EventCheckinControllerFunction
 ])
+.controller("AuthController", [
+  "$stateParams",
+  "$http",
+  AuthController
+])
+.controller("Home", [
+  Home
+])
 .factory("EventFactory", [
   "$resource",
   EventFactoryFunction
@@ -71,9 +89,14 @@ angular
   '$resource',
   UserIdFactoryFunction
 ])
+.factory("KeyFactory", [
+  '$resource',
+  KeyFactoryFunction
+])
 
 // Routing
-function Router($stateProvider){
+function Router($stateProvider, $locationProvider){
+  $locationProvider.html5Mode(true)
   $stateProvider
   .state("eventIndex", {
     url: "/events",
@@ -100,7 +123,7 @@ function Router($stateProvider){
     controllerAs: "vm"
   })
   .state("eventWelcome", {
-    url: "/",
+    url: "/welcome",
     templateUrl: "js/ng-views/welcome.html",
     controller: "EventWelcomeController",
     controllerAs: "vm"
@@ -128,6 +151,28 @@ function Router($stateProvider){
     templateUrl: 'js/ng-views/userShow.html',
     controller: 'EventCheckinController',
     controllerAs: 'vm'
+  })
+  .state("authRedirect", {
+    url: '/auth',
+    templateUrl: 'js/ng-views/newSignIn.html',
+    controller: 'AuthController',
+    controllerAs: 'vm'
+  })
+  .state("Home", {
+    url: '/',
+    templateUrl: 'js/ng-views/newSignIn.html',
+    controller: 'Home',
+    controllerAs: 'vm'
+  })
+  .state("NewSignIn", {
+    url: '/signIn',
+    templateUrl: 'js/ng-views/wait.html',
+    controller: 'NewSignInController',
+    controllerAs: 'vm'
+  })
+  .state("Wait", {
+    url: '/loading',
+    templateUrl: 'js/ng-views/wait.html'
   })
 }
 
@@ -172,6 +217,47 @@ function UserIdFactoryFunction($resource){
   })
 }
 
+function KeyFactoryFunction($resource){
+  return $resource("http://localhost:3000/",
+  {
+    url: '@url'
+  }, {
+    get: {method: 'get'},
+    post: {method: 'post'}
+  })
+}
+
+function AuthController ($stateParams, $http){
+  let code = $stateParams.code
+  console.log(code);
+}
+
+function Home (){
+  console.log("home");
+}
+
+function NewSignInControllerFunction(KeyFactory, $window, $http, $stateParams, $state){
+  console.log("hitting controller");
+  if ($window.location.search){
+    console.log("if loop");
+    let code = $window.location.search.split("=")[1];
+    console.log(code);
+    $http({
+      method: "post",
+      url: `http://localhost:3000/code/?code=${code}`
+    }).then(response => {
+      console.log(response.data);
+      window.data = response.data
+      $state.go("eventWelcome")
+    })
+  } else {
+    KeyFactory.get({}, response => {
+        console.log(response.url);
+        $window.location.href = response.url
+    })
+  }
+}
+
 function eventIndexControllerFunction(EventFactory, UserFactory){
   this.events = EventFactory.query()
 }
@@ -191,19 +277,21 @@ function EventShowControllerFunction(EventFactory, $stateParams, UserFactory, $s
   }
 }
 
-function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserIdFactory) {
+function EventWelcomeControllerFunction(EventFactory, UserFactory, $state, UserIdFactory, KeyFactory) {
+  console.log(window.data);
   wait()
   function wait(){
+    console.log("wait");
     if(typeof window.data !== "undefined"){
       UserIdFactory.get({linkedinId: window.data.id}, function(user){
         console.log(user);
-          if (user.linkedinId === window.data.id) {
-            console.log("user exists")
-            window.current_user = window.data
-          }else{
-            console.log("creating user");
-            UserCreateControllerFunction(UserFactory, $state)
-          }
+        if (user.linkedinId === window.data.id) {
+          console.log("user exists")
+          window.current_user = window.data
+        }else{
+          console.log("creating user");
+          UserCreateControllerFunction(UserFactory, $state)
+        }
       })
     }else{
       setTimeout(function(){
@@ -275,17 +363,4 @@ function userShowControllerFunction(EventFactory, $stateParams, UserFactory, $st
   this.home = function(){
     $state.go("eventWelcome")
   }
-}
-
-function onLinkedInLoad() {
-  IN.Event.on(IN, "auth", function(){
-    IN.API.Raw("/people/~:(id,firstName,lastName,emailAddress,summary,picture-urls::(original),public-profile-url,headline)?format=json").result(onSuccess).error(onError);
-    function onSuccess(data, UserFactory) {
-      window.data = data
-      EventWelcomeControllerFunction()
-    }
-    function onError(error) {
-      console.log(error);
-    }
-  })
 }
