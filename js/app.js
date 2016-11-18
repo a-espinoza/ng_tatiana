@@ -244,7 +244,7 @@ function NewSignInControllerFunction(KeyFactory, $window, $http, $stateParams, $
    console.log(code);
    $http({
      method: "post",
-     url: `http://localhost:3000/code/?code=${code}`
+     url: `https://salty-fjord-31987.herokuapp.com/code/?code=${code}`
    }).then(response => {
      console.log(response.data);
      window.data = response.data
