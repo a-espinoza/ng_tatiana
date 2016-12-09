@@ -29,4 +29,4 @@ For this repo, please install dependencies using ```npm install```.  For the API
 * Streamline oAuth backend code
 * Update CSS
 
-Created by @lizafloyd, @LWatsonlm & @a-espioza
+Created by [@lizafloyd](https://github.com/lizafloyd), [@LWatsonlm](https://github.com/LWatsonlm) & [@a-espioza](https://github.com/a-espinoza/)
