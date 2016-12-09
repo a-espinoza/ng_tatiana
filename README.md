@@ -1,4 +1,4 @@
-# ng_tatiana
+# Connect+
 
 This repository is the AngularJS front end of a two-part networking event attendance management application using the LinkedIn API, Connect+.
 
