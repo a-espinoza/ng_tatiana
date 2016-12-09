@@ -28,3 +28,5 @@ For this repo, please install dependencies using ```npm install```.  For the API
 * Analytics
 * Streamline oAuth backend code
 * Update CSS
+
+Created by @lizafloyd, @LWatsonlm & @a-espioza
